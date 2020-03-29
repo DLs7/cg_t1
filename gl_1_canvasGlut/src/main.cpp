@@ -26,16 +26,14 @@
 #include "Botao.h"
 #include "Bmp.h"
 
-
-Bola    *b = NULL;
-Relogio *r = NULL;
-Botao   *bt = NULL; //se a aplicacao tiver varios botoes, sugiro implementar um manager de botoes.
-Bmp     *bmp = NULL;
+Bmp *bmp = NULL;
 
 //variavel global para selecao do que sera exibido na canvas.
 int opcao  = 49;
 int auxOpcao = opcao;
+
 int screenWidth = 1024, screenHeight = 512; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+
 int imgOffset, offset = 32;
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
 
@@ -43,10 +41,12 @@ void RenderBitmap(unsigned char *data, int pos_x, int pos_y, bool r, bool g, boo
 {
     clear(0,0,0);
 
+    int width = bmp->getWidth(), height = bmp->getHeight();
+
     int sum = 0;
 
-    for(int y = 0; y < bmp->getHeight(); y++) {
-        for(int x = 0; x < bmp->getWidth(); x++) {
+    for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
             float red = ((float)data[sum]/255) * r;
             float green = ((float)data[sum + 1]/255) * g;
             float blue = ((float)data[sum + 2]/255) * b;
@@ -63,10 +63,12 @@ void RenderMonochromeBitmap(unsigned char *data, int pos_x, int pos_y)
 {
     clear(0,0,0);
 
+    int width = bmp->getWidth(), height = bmp->getHeight();
+
     int sum = 0;
 
-    for(int y = 0; y < bmp->getHeight(); y++) {
-        for(int x = 0; x < bmp->getWidth(); x++) {
+    for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
             float red = ((float)data[sum]/255) * 0.299;
             float green = ((float)data[sum + 1]/255) * 0.587;
             float blue = ((float)data[sum + 2]/255) * 0.144;
@@ -143,26 +145,9 @@ void render()
 void keyboard(int key)
 {
    printf("\nTecla: %d" , key);
-   if( key < 200 )
+   if( key < 204 )
    {
       opcao = key;
-   }
-
-   switch(key)
-   {
-      case 27:
-	     exit(0);
-	  break;
-
-	  //seta para a esquerda
-      case 200:
-         b->move(-10);
-	  break;
-
-	  //seta para a direita
-	  case 202:
-         b->move(10);
-	  break;
    }
 }
 
@@ -179,28 +164,19 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
    mouseY = y;
 
    //printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
-
-   if( state == 0 ) //clicou
-   {
-       if( bt->Colidiu(x, y) )
-       {
-           printf("\nClicou no botao\n");
-       }
-   }
 }
 
 int main(void)
 {
-   initCanvas(&screenWidth, &screenHeight, "Titulo da Janela: Canvas 2D - Pressione 1, 2, 3");
+   initCanvas(&screenWidth, &screenHeight, "BMP - Pressione 1, 2, 3, 4 ou 5");
 
-   b = new Bola();
-   r = new Relogio();
-   bt = new Botao(200, 400, 140, 50, "Sou um botao");
-   bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img.bmp");
+   bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img1.bmp");
+   //bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img2.bmp");
+   //bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img3.bmp");
+   //bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img4.bmp");
+   bmp->convertBGRtoRGB();
 
    imgOffset = screenHeight - bmp->getHeight() - offset;
-
-   bmp->convertBGRtoRGB();
 
    runCanvas();
 }
