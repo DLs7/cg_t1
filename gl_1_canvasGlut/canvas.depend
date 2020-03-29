@@ -294,7 +294,7 @@
 1585454453 c:\users\augus\onedrive\Área de trabalho\cg_t1\gl_1_canvasglut\src\relogio.h
 	"gl_canvas2d.h"
 
-1585464260 source:c:\users\augus\onedrive\Área de trabalho\cg_t1\gl_1_canvasglut\src\main.cpp
+1585520836 source:c:\users\augus\onedrive\Área de trabalho\cg_t1\gl_1_canvasglut\src\main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>
@@ -302,8 +302,6 @@
 	<stdlib.h>
 	<stdbool.h>
 	"gl_canvas2d.h"
-	"Bola.h"
-	"Relogio.h"
 	"Botao.h"
 	"Bmp.h"
 

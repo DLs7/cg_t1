@@ -21,8 +21,6 @@
 
 #include "gl_canvas2d.h"
 
-#include "Bola.h"
-#include "Relogio.h"
 #include "Botao.h"
 #include "Bmp.h"
 
@@ -32,9 +30,9 @@ Bmp *bmp = NULL;
 int opcao  = 49;
 int auxOpcao = opcao;
 
-int screenWidth = 1024, screenHeight = 512; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+int screenWidth = 0, screenHeight = 0; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 
-int imgOffset, offset = 32;
+int imgOffset, offset = 32, graphOffset = 256 + offset;
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
 
 void RenderBitmap(unsigned char *data, int pos_x, int pos_y, bool r, bool g, bool b)
@@ -83,6 +81,21 @@ void RenderMonochromeBitmap(unsigned char *data, int pos_x, int pos_y)
     }
 }
 
+void RenderHistogram()
+{
+    color(1, 1, 1);
+    line(screenWidth - graphOffset, 32, screenWidth - offset, 32);
+    line(screenWidth - offset - 8, 40, screenWidth - offset, 32);
+    line(screenWidth - offset - 8, 24, screenWidth - offset, 32);
+    line(screenWidth - graphOffset, 32, screenWidth - graphOffset, 132);
+    line(screenWidth - graphOffset - 8, 124, screenWidth - graphOffset, 132);
+    line(screenWidth - graphOffset + 8, 124, screenWidth - graphOffset, 132);
+}
+
+void RenderMonochromeHistogram()
+{
+}
+
 void DrawMouseScreenCoords()
 {
     char str[100];
@@ -104,6 +117,8 @@ void render()
    //bt->Render();
 
    //DesenhaLinhaDegrade();
+
+   RenderHistogram();
 
    if ( opcao == 49 )
    {
@@ -163,20 +178,24 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
    mouseX = x; //guarda as coordenadas do mouse para exibir dentro da render()
    mouseY = y;
 
-   //printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
+   printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
 }
 
 int main(void)
 {
-   initCanvas(&screenWidth, &screenHeight, "BMP - Pressione 1, 2, 3, 4 ou 5");
-
-   bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img1.bmp");
-   //bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img2.bmp");
-   //bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img3.bmp");
-   //bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img4.bmp");
+   bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img1.bmp");
+   //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img2.bmp");
+   //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img3.bmp");
+   //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img4.bmp");
    bmp->convertBGRtoRGB();
 
+   screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
+   screenHeight = (2 * offset) + bmp->getHeight();
+
+   printf("\n%dx%d\n", screenWidth, screenHeight);
    imgOffset = screenHeight - bmp->getHeight() - offset;
+
+   initCanvas(&screenWidth, &screenHeight, "BMP - Pressione 1, 2, 3, 4 ou 5");
 
    runCanvas();
 }
