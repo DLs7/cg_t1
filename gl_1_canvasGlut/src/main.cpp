@@ -23,16 +23,33 @@
 #include "Bola.h"
 #include "Relogio.h"
 #include "Botao.h"
+#include "Bmp.h"
 
 
 Bola    *b = NULL;
 Relogio *r = NULL;
 Botao   *bt = NULL; //se a aplicacao tiver varios botoes, sugiro implementar um manager de botoes.
+Bmp     *bmp = NULL;
 
 //variavel global para selecao do que sera exibido na canvas.
 int opcao  = 50;
-int screenWidth = 500, screenHeight = 500; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+int screenWidth = 512, screenHeight = 512; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
+
+void RenderBitmap(Bmp *bmp, int pos_x, int pos_y)
+{
+    bmp->convertBGRtoRGB();
+    unsigned char *data = bmp->getImage();
+    int sum = 0;
+
+    for(int y = 0; y < bmp->getHeight(); y++) {
+        for(int x = 0; x < bmp->getWidth(); x++) {
+            color();
+            sum++;
+            point(pos_x + x, pos_y + y);
+        }
+    }
+}
 
 void DesenhaSenoide()
 {
@@ -87,7 +104,7 @@ void render()
    }
    if( opcao == 51 ) //'3' -> senoide
    {
-       DesenhaSenoide();
+      bmp->getImage();
    }
 }
 
@@ -148,6 +165,7 @@ int main(void)
    b = new Bola();
    r = new Relogio();
    bt = new Botao(200, 400, 140, 50, "Sou um botao");
+   bmp = new Bmp("C:\\Users\\augus\\Desktop\\cg_t1\\gl_1_canvasGlut\\img\\img.bmp");
 
    runCanvas();
 }

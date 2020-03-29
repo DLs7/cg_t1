@@ -14,7 +14,7 @@ public:
   Bola()
   {
      caindo  = true;
-     vel     = 0.001;
+     vel     = 10;
      altura  = 410;
      posicao = 200;
      r = 1;
@@ -49,7 +49,7 @@ public:
       }
       else if( vel < 0 && caindo == false )
       {
-         vel    = 0.001;
+         vel    = 10;
          caindo = true;
       }
       circleFill(posicao, (int)altura, 30, 15);
