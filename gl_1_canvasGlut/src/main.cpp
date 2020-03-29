@@ -36,17 +36,15 @@ int opcao  = 50;
 int screenWidth = 512, screenHeight = 512; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
 
-void RenderBitmap(Bmp *bmp, int pos_x, int pos_y)
+void RenderBitmap(unsigned char *data, int pos_x, int pos_y)
 {
-    bmp->convertBGRtoRGB();
-    unsigned char *data = bmp->getImage();
     int sum = 0;
 
     for(int y = 0; y < bmp->getHeight(); y++) {
         for(int x = 0; x < bmp->getWidth(); x++) {
-            color();
-            sum++;
+            color((float)data[sum]/255, (float)data[sum + 1]/255, (float)data[sum + 2]/255);
             point(pos_x + x, pos_y + y);
+            sum += 3;
         }
     }
 }
@@ -104,7 +102,7 @@ void render()
    }
    if( opcao == 51 ) //'3' -> senoide
    {
-      bmp->getImage();
+      RenderBitmap(bmp->getImage(), 200, 200);
    }
 }
 
@@ -147,7 +145,7 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
    mouseX = x; //guarda as coordenadas do mouse para exibir dentro da render()
    mouseY = y;
 
-   printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
+   //printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
 
    if( state == 0 ) //clicou
    {
@@ -165,7 +163,9 @@ int main(void)
    b = new Bola();
    r = new Relogio();
    bt = new Botao(200, 400, 140, 50, "Sou um botao");
-   bmp = new Bmp("C:\\Users\\augus\\Desktop\\cg_t1\\gl_1_canvasGlut\\img\\img.bmp");
+   bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img.bmp");
+
+   bmp->convertBGRtoRGB();
 
    runCanvas();
 }

@@ -184,3 +184,67 @@
 	<stdio.h>
 	<stdlib.h>
 
+1585454453 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\bmp.cpp
+	"Bmp.h"
+	<string.h>
+
+1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\bmp.h
+	<stdio.h>
+	<stdlib.h>
+
+1585454453 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\gl_canvas2d.cpp
+	"gl_canvas2d.h"
+	<GL/glut.h>
+
+1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\gl_canvas2d.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+
+1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\include\gl\glut.h
+	"freeglut_std.h"
+
+1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\include\gl\freeglut_ext.h
+	<stdarg.h>
+
+1585454453 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\relogio.cpp
+	"Relogio.h"
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+
+1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\relogio.h
+	"gl_canvas2d.h"
+
+1585457655 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\main.cpp
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	"gl_canvas2d.h"
+	"Bola.h"
+	"Relogio.h"
+	"Botao.h"
+	"Bmp.h"
+
+1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\bola.h
+	"gl_canvas2d.h"
+
+1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\botao.h
+	"gl_canvas2d.h"
+
