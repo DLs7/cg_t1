@@ -17,6 +17,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "gl_canvas2d.h"
 
@@ -32,42 +33,52 @@ Botao   *bt = NULL; //se a aplicacao tiver varios botoes, sugiro implementar um 
 Bmp     *bmp = NULL;
 
 //variavel global para selecao do que sera exibido na canvas.
-int opcao  = 50;
-int screenWidth = 512, screenHeight = 512; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+int opcao  = 49;
+int auxOpcao = opcao;
+int screenWidth = 1024, screenHeight = 512; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+int imgOffset, offset = 32;
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
 
-void RenderBitmap(unsigned char *data, int pos_x, int pos_y)
+void RenderBitmap(unsigned char *data, int pos_x, int pos_y, bool r, bool g, bool b)
 {
+    clear(0,0,0);
+
     int sum = 0;
 
     for(int y = 0; y < bmp->getHeight(); y++) {
         for(int x = 0; x < bmp->getWidth(); x++) {
-            color((float)data[sum]/255, (float)data[sum + 1]/255, (float)data[sum + 2]/255);
+            float red = ((float)data[sum]/255) * r;
+            float green = ((float)data[sum + 1]/255) * g;
+            float blue = ((float)data[sum + 2]/255) * b;
+
+            color(red, green, blue);
             point(pos_x + x, pos_y + y);
+
             sum += 3;
         }
     }
 }
 
-void DesenhaSenoide()
+void RenderMonochromeBitmap(unsigned char *data, int pos_x, int pos_y)
 {
-   float x=0, y;
-   color(0, 1, 0);
-   for(float i=0; i < 68; i+=0.001)
-   {
-      y = sin(i)*50;
-      point((int)x, (int)y+100);
-      x+=0.01;
-   }
-}
+    clear(0,0,0);
 
-void DesenhaLinhaDegrade()
-{
-   for(float i=0; i<350; i++)
-   {
-	  color(i/200, i/200, i/200);
-	  point((int)(i+100), (int)(240));
-   }
+    int sum = 0;
+
+    for(int y = 0; y < bmp->getHeight(); y++) {
+        for(int x = 0; x < bmp->getWidth(); x++) {
+            float red = ((float)data[sum]/255) * 0.299;
+            float green = ((float)data[sum + 1]/255) * 0.587;
+            float blue = ((float)data[sum + 2]/255) * 0.144;
+
+            float lum = red + green + blue;
+
+            color(lum, lum, lum);
+            point(pos_x + x, pos_y + y);
+
+            sum += 3;
+        }
+    }
 }
 
 void DrawMouseScreenCoords()
@@ -84,25 +95,47 @@ void DrawMouseScreenCoords()
 //Deve-se manter essa função com poucas linhas de codigo.
 void render()
 {
-   text(20,500,"Programa Demo Canvas2D");
+   //text(20,500,"Programa Demo Canvas2D");
 
-   DrawMouseScreenCoords();
+   //DrawMouseScreenCoords();
 
-   bt->Render();
+   //bt->Render();
 
-   DesenhaLinhaDegrade();
+   //DesenhaLinhaDegrade();
 
-   if( opcao == 49 ) //'1' -> relogio
+   if ( opcao == 49 )
    {
-      r->anima();
+      RenderBitmap(bmp->getImage(), offset, imgOffset, 1, 1, 1);
+      auxOpcao = opcao;
    }
-   if( opcao == '2' ) //50 -> bola
+   else if( opcao == 50 ) //50 -> vermelho
    {
-      b->anima();
+      RenderBitmap(bmp->getImage(), offset, imgOffset, 1, 0, 0);
+      auxOpcao = opcao;
    }
-   if( opcao == 51 ) //'3' -> senoide
+   else if( opcao == 51 ) //'3' -> verde
    {
-      RenderBitmap(bmp->getImage(), 200, 200);
+      RenderBitmap(bmp->getImage(), offset, imgOffset, 0, 1, 0);
+      auxOpcao = opcao;
+   }
+   else if( opcao == 52 ) //'4' -> azul
+   {
+      RenderBitmap(bmp->getImage(), offset, imgOffset, 0, 0 ,1);
+      auxOpcao = opcao;
+   }
+   else if ( opcao == 53 ) {
+      RenderMonochromeBitmap(bmp->getImage(), offset, imgOffset);
+      auxOpcao = opcao;
+   }
+   else
+   {
+      opcao = auxOpcao;
+
+      if(opcao == 49)      RenderBitmap(bmp->getImage(), offset, imgOffset, 1, 1, 1);
+      else if(opcao == 50) RenderBitmap(bmp->getImage(), offset, imgOffset, 1, 0, 0);
+      else if(opcao == 51) RenderBitmap(bmp->getImage(), offset, imgOffset, 0, 1, 0);
+      else if(opcao == 52) RenderBitmap(bmp->getImage(), offset, imgOffset, 0, 0 ,1);
+      else if(opcao == 53) RenderMonochromeBitmap(bmp->getImage(), offset, imgOffset);
    }
 }
 
@@ -164,6 +197,8 @@ int main(void)
    r = new Relogio();
    bt = new Botao(200, 400, 140, 50, "Sou um botao");
    bmp = new Bmp(".\\gl_1_canvasGlut\\img\\img.bmp");
+
+   imgOffset = screenHeight - bmp->getHeight() - offset;
 
    bmp->convertBGRtoRGB();
 
