@@ -120,11 +120,11 @@
 	<stdio.h>
 	<stdlib.h>
 
-1584043099 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\gl_canvas2d.cpp
+1585605364 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\gl_canvas2d.cpp
 	"gl_canvas2d.h"
 	<GL/glut.h>
 
-1585444370 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\gl_canvas2d.h
+1585605364 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\gl_canvas2d.h
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
@@ -132,10 +132,10 @@
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 
-1426372440 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\include\gl\glut.h
+1585605364 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\include\gl\glut.h
 	"freeglut_std.h"
 
-1437579942 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\include\gl\freeglut_std.h
+1585605364 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\include\gl\freeglut_std.h
 	<windows.h>
 	<EGL/egl.h>
 	<GLES/gl.h>
@@ -146,10 +146,10 @@
 	<GL/glu.h>
 	<stdlib.h>
 
-1426372440 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\include\gl\freeglut_ext.h
+1585605364 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\include\gl\freeglut_ext.h
 	<stdarg.h>
 
-1585537369 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\main.cpp
+1585605364 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>
@@ -163,25 +163,25 @@
 1585451517 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bola.h
 	"gl_canvas2d.h"
 
-1193164156 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\relogio.h
+1585605364 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\relogio.h
 	"gl_canvas2d.h"
 
-1582318273 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\botao.h
+1585605364 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\botao.h
 	"gl_canvas2d.h"
 
-1582230474 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\relogio.cpp
+1585605364 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\relogio.cpp
 	"Relogio.h"
 	<math.h>
 	<stdio.h>
 	<stdlib.h>
 
-1585537717 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.cpp
+1585605364 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.cpp
 	"Bmp.h"
 	<string.h>
 	<stdbool.h>
 	"gl_canvas2d.h"
 
-1585537645 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.h
+1585605364 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.h
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
@@ -316,5 +316,69 @@
 	"gl_canvas2d.h"
 
 1585454453 c:\users\augus\onedrive\Área de trabalho\cg_t1\gl_1_canvasglut\src\botao.h
+	"gl_canvas2d.h"
+
+1585605364 source:c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\src\bmp.cpp
+	"Bmp.h"
+	<string.h>
+	<stdbool.h>
+	"gl_canvas2d.h"
+
+1585605364 c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\src\bmp.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	"gl_canvas2d.h"
+
+1585605364 c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\src\gl_canvas2d.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<string.h>
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+
+1585605364 c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\include\gl\glut.h
+	"freeglut_std.h"
+
+1585605364 c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\include\gl\freeglut_std.h
+	<windows.h>
+	<EGL/egl.h>
+	<GLES/gl.h>
+	<GLES2/gl2.h>
+	<OpenGL/gl.h>
+	<OpenGL/glu.h>
+	<GL/gl.h>
+	<GL/glu.h>
+	<stdlib.h>
+
+1585605364 c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\include\gl\freeglut_ext.h
+	<stdarg.h>
+
+1585605364 source:c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\src\gl_canvas2d.cpp
+	"gl_canvas2d.h"
+	<GL/glut.h>
+
+1585605364 source:c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\src\main.cpp
+	<GL/glut.h>
+	<GL/freeglut_ext.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	"gl_canvas2d.h"
+	"Botao.h"
+	"Bmp.h"
+
+1585605364 c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\src\botao.h
+	"gl_canvas2d.h"
+
+1585605364 source:c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\src\relogio.cpp
+	"Relogio.h"
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+
+1585605364 c:\users\augus\desktop\cg_t1\cg_t1\gl_1_canvasglut\src\relogio.h
 	"gl_canvas2d.h"
 

@@ -57,6 +57,7 @@ private:
    void startCount();
    void countColors();
    void countLum();
+   void graph(int x0, int y0, int xf, int yf);
 
 public:
    Bmp(const char *fileName);
@@ -64,9 +65,9 @@ public:
    int    getWidth(void);
    int    getHeight(void);
    void   convertBGRtoRGB(void);
-   void   renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b);
+   void   renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotation);
    void   renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b);
-   void   renderBitmapMonochrome(int pos_x, int pos_y);
+   void   renderBitmapMonochrome(int pos_x, int pos_y, int rotation);
    void   renderHistogramMonochrome(int x0, int y0, int xf, int yf);
 };
 
