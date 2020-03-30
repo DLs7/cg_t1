@@ -20,7 +20,7 @@ Bmp::Bmp(const char *fileName)
    if( fileName != NULL && strlen(fileName) > 0 )
    {
       load(fileName);
-      printf("File opened.");
+      printf("\nFile opened.");
    }
    else
    {
@@ -28,13 +28,13 @@ Bmp::Bmp(const char *fileName)
    }
 
    startCount();
-   printf("Start arrays.");
+   printf("\nStart arrays.");
 
    countColors();
-   printf("Colors counted.");
+   printf("\nColors counted.");
 
    countLum();
-   printf("Luminosity counted.");
+   printf("\nLuminosity counted.");
 }
 
 uchar* Bmp::getImage()
@@ -284,7 +284,11 @@ void Bmp::countLum()
 
             float lum = red + green + blue;
 
-            l_count[(int)round(lum)]++;
+            if(lum > 255){
+                lum = 255;
+            }
+
+            l_count[(int)lum]++;
 
             sum += 3;
         }

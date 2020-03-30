@@ -152,7 +152,7 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
 int main(void)
 {
-   bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img1.bmp");
+   bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img3.bmp");
    //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img2.bmp");
    //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img3.bmp");
    //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img4.bmp");

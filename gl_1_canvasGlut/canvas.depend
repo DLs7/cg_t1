@@ -251,13 +251,17 @@
 1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\botao.h
 	"gl_canvas2d.h"
 
-1585454453 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\bmp.cpp
+1585538122 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\bmp.cpp
 	"Bmp.h"
 	<string.h>
+	<stdbool.h>
+	"gl_canvas2d.h"
 
-1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\bmp.h
+1585537887 c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\bmp.h
 	<stdio.h>
 	<stdlib.h>
+	<stdbool.h>
+	"gl_canvas2d.h"
 
 1585454453 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\gl_canvas2d.cpp
 	"gl_canvas2d.h"
@@ -297,7 +301,7 @@
 1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\relogio.h
 	"gl_canvas2d.h"
 
-1585520836 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\main.cpp
+1585537914 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>
