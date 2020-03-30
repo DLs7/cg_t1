@@ -149,15 +149,14 @@
 1426372440 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\include\gl\freeglut_ext.h
 	<stdarg.h>
 
-1585452017 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\main.cpp
+1585532144 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>
 	<stdio.h>
 	<stdlib.h>
+	<stdbool.h>
 	"gl_canvas2d.h"
-	"Bola.h"
-	"Relogio.h"
 	"Botao.h"
 	"Bmp.h"
 
@@ -176,13 +175,17 @@
 	<stdio.h>
 	<stdlib.h>
 
-1531759675 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.cpp
+1585531178 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.cpp
 	"Bmp.h"
 	<string.h>
+	<stdbool.h>
+	"gl_canvas2d.h"
 
-1531759698 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.h
+1585526182 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.h
 	<stdio.h>
 	<stdlib.h>
+	<stdbool.h>
+	"gl_canvas2d.h"
 
 1585454453 source:c:\users\augus\onedrive\Área de trabalho\cg_t1-master\gl_1_canvasglut\src\bmp.cpp
 	"Bmp.h"

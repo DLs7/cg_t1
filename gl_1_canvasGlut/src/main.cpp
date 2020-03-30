@@ -32,69 +32,10 @@ int auxOpcao = opcao;
 
 int screenWidth = 0, screenHeight = 0; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 
-int imgOffset, offset = 32, graphOffset = 256 + offset;
+int graph_x0, graph_xf, graph_y0, graph_yf;
+
+int imgOffset, offset = 32, graphOffset = 256 + (2 * offset);
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
-
-void RenderBitmap(unsigned char *data, int pos_x, int pos_y, bool r, bool g, bool b)
-{
-    clear(0,0,0);
-
-    int width = bmp->getWidth(), height = bmp->getHeight();
-
-    int sum = 0;
-
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
-            float red = ((float)data[sum]/255) * r;
-            float green = ((float)data[sum + 1]/255) * g;
-            float blue = ((float)data[sum + 2]/255) * b;
-
-            color(red, green, blue);
-            point(pos_x + x, pos_y + y);
-
-            sum += 3;
-        }
-    }
-}
-
-void RenderMonochromeBitmap(unsigned char *data, int pos_x, int pos_y)
-{
-    clear(0,0,0);
-
-    int width = bmp->getWidth(), height = bmp->getHeight();
-
-    int sum = 0;
-
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
-            float red = ((float)data[sum]/255) * 0.299;
-            float green = ((float)data[sum + 1]/255) * 0.587;
-            float blue = ((float)data[sum + 2]/255) * 0.144;
-
-            float lum = red + green + blue;
-
-            color(lum, lum, lum);
-            point(pos_x + x, pos_y + y);
-
-            sum += 3;
-        }
-    }
-}
-
-void RenderHistogram()
-{
-    color(1, 1, 1);
-    line(screenWidth - graphOffset, 32, screenWidth - offset, 32);
-    line(screenWidth - offset - 8, 40, screenWidth - offset, 32);
-    line(screenWidth - offset - 8, 24, screenWidth - offset, 32);
-    line(screenWidth - graphOffset, 32, screenWidth - graphOffset, 132);
-    line(screenWidth - graphOffset - 8, 124, screenWidth - graphOffset, 132);
-    line(screenWidth - graphOffset + 8, 124, screenWidth - graphOffset, 132);
-}
-
-void RenderMonochromeHistogram()
-{
-}
 
 void DrawMouseScreenCoords()
 {
@@ -103,6 +44,36 @@ void DrawMouseScreenCoords()
     text(10,300, str);
     sprintf(str, "Screen: (%d,%d)", screenWidth, screenHeight);
     text(10,320, str);
+}
+
+void fullRender()
+{
+    bmp->renderBitmap(offset, imgOffset, 1, 1, 1);
+    bmp->renderHistogram(graph_x0, graph_y0, graph_xf, graph_yf, 1, 1, 1);
+}
+
+void redRender()
+{
+    bmp->renderBitmap(offset, imgOffset, 1, 0, 0);
+    bmp->renderHistogram(graph_x0, graph_y0, graph_xf, graph_yf, 1, 0, 0);
+}
+
+void greenRender()
+{
+    bmp->renderBitmap(offset, imgOffset, 0, 1, 0);
+    bmp->renderHistogram(graph_x0, graph_y0, graph_xf, graph_yf, 0, 1, 0);
+}
+
+void blueRender()
+{
+    bmp->renderBitmap(offset, imgOffset, 0, 0, 1);
+    bmp->renderHistogram(graph_x0, graph_y0, graph_xf, graph_yf, 0, 0, 1);
+}
+
+void monoRender()
+{
+    bmp->renderBitmapMonochrome(offset, imgOffset);
+    bmp->renderHistogramMonochrome(graph_x0, graph_y0, graph_xf, graph_yf);
 }
 
 //funcao chamada continuamente. Deve-se controlar o que desenhar por meio de variaveis globais
@@ -118,41 +89,39 @@ void render()
 
    //DesenhaLinhaDegrade();
 
-   RenderHistogram();
-
    if ( opcao == 49 )
    {
-      RenderBitmap(bmp->getImage(), offset, imgOffset, 1, 1, 1);
+      fullRender();
       auxOpcao = opcao;
    }
    else if( opcao == 50 ) //50 -> vermelho
    {
-      RenderBitmap(bmp->getImage(), offset, imgOffset, 1, 0, 0);
+      redRender();
       auxOpcao = opcao;
    }
    else if( opcao == 51 ) //'3' -> verde
    {
-      RenderBitmap(bmp->getImage(), offset, imgOffset, 0, 1, 0);
+      greenRender();
       auxOpcao = opcao;
    }
    else if( opcao == 52 ) //'4' -> azul
    {
-      RenderBitmap(bmp->getImage(), offset, imgOffset, 0, 0 ,1);
+      blueRender();
       auxOpcao = opcao;
    }
    else if ( opcao == 53 ) {
-      RenderMonochromeBitmap(bmp->getImage(), offset, imgOffset);
+      monoRender();
       auxOpcao = opcao;
    }
    else
    {
       opcao = auxOpcao;
 
-      if(opcao == 49)      RenderBitmap(bmp->getImage(), offset, imgOffset, 1, 1, 1);
-      else if(opcao == 50) RenderBitmap(bmp->getImage(), offset, imgOffset, 1, 0, 0);
-      else if(opcao == 51) RenderBitmap(bmp->getImage(), offset, imgOffset, 0, 1, 0);
-      else if(opcao == 52) RenderBitmap(bmp->getImage(), offset, imgOffset, 0, 0 ,1);
-      else if(opcao == 53) RenderMonochromeBitmap(bmp->getImage(), offset, imgOffset);
+      if(opcao == 49) fullRender();
+      else if(opcao == 50) redRender();
+      else if(opcao == 51) greenRender();
+      else if(opcao == 52) blueRender();
+      else if(opcao == 53) monoRender();
    }
 }
 
@@ -183,7 +152,7 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
 int main(void)
 {
-   bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img1.bmp");
+   bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img5.bmp");
    //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img2.bmp");
    //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img3.bmp");
    //bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img4.bmp");
@@ -192,8 +161,16 @@ int main(void)
    screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
    screenHeight = (2 * offset) + bmp->getHeight();
 
-   printf("\n%dx%d\n", screenWidth, screenHeight);
    imgOffset = screenHeight - bmp->getHeight() - offset;
+
+   if(screenHeight < 100 + 2*(offset) + offset/2){
+      screenHeight = 100 + 2*(offset) + offset/2;
+   }
+
+   graph_x0 = screenWidth + offset - graphOffset;
+   graph_y0 = offset + offset/2;
+   graph_xf = screenWidth - offset;
+   graph_yf = 100 + offset + offset/2;
 
    initCanvas(&screenWidth, &screenHeight, "BMP - Pressione 1, 2, 3, 4 ou 5");
 

@@ -14,6 +14,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include "gl_canvas2d.h"
 
 
 #define HEADER_SIZE      14 //sizeof(HEADER) vai dar 16 devido ao alinhamento de bytes
@@ -44,13 +46,17 @@ typedef struct {
 class Bmp
 {
 private:
-   int width, height, imagesize, bytesPerLine, bits;
+   int width, height, imagesize, bytesPerLine, bits, r_max, g_max, b_max, l_max;
+   int r_count[256], g_count[256], b_count[256], l_count[256];
    unsigned char *data;
 
    HEADER     header;
    INFOHEADER info;
 
    void load(const char *fileName);
+   void startCount();
+   void countColors();
+   void countLum();
 
 public:
    Bmp(const char *fileName);
@@ -58,6 +64,10 @@ public:
    int    getWidth(void);
    int    getHeight(void);
    void   convertBGRtoRGB(void);
+   void   renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b);
+   void   renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b);
+   void   renderBitmapMonochrome(int pos_x, int pos_y);
+   void   renderHistogramMonochrome(int x0, int y0, int xf, int yf);
 };
 
 #endif
