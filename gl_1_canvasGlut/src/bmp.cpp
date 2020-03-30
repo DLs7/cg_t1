@@ -20,6 +20,7 @@ Bmp::Bmp(const char *fileName)
    if( fileName != NULL && strlen(fileName) > 0 )
    {
       load(fileName);
+      printf("File opened.");
    }
    else
    {
@@ -27,9 +28,13 @@ Bmp::Bmp(const char *fileName)
    }
 
    startCount();
+   printf("Start arrays.");
 
    countColors();
+   printf("Colors counted.");
+
    countLum();
+   printf("Luminosity counted.");
 }
 
 uchar* Bmp::getImage()
