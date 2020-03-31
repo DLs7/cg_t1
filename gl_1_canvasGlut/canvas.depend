@@ -149,7 +149,7 @@
 1585605364 c:\users\augus\desktop\cg_t1\gl_1_canvasglut\include\gl\freeglut_ext.h
 	<stdarg.h>
 
-1585605364 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\main.cpp
+1585613923 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>
@@ -175,7 +175,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1585605364 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.cpp
+1585614852 source:c:\users\augus\desktop\cg_t1\gl_1_canvasglut\src\bmp.cpp
 	"Bmp.h"
 	<string.h>
 	<stdbool.h>

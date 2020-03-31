@@ -202,7 +202,7 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
 int main(void)
 {
-   bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img1.bmp");
+   bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\landscape.bmp");
    bmp->convertBGRtoRGB();
 
    screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;

@@ -378,8 +378,8 @@ void Bmp::graph(int x0, int y0, int xf, int yf)
     color(1, 1, 1);
 
     text(x0 - 4, y0 - 16, "0");
-    text(x0 + ((xf - x0)/2) - 14, y0 -16, "128");
-    text(xf - 14, y0 - 16, "256");
+    text(x0 + ((xf - x0)/2) - 18, y0 - 16, "128");
+    text(xf - 18, y0 - 16, "256");
     for(int x = 0; x <= 256; x += 16) {
         line(x0 + x, y0 - 2, x0 + x, y0 + 2);
     }
@@ -388,13 +388,14 @@ void Bmp::graph(int x0, int y0, int xf, int yf)
     line(xf + 4, y0 + 4, xf + 8, y0);
     line(xf + 4, y0 - 4, xf + 8, y0);
 
+    text(x0 - 16, y0 - 4, "0.0");
+    text(x0 - 36, y0 + ((yf - y0)/2) - 4, "0.5");
+    text(x0 - 36, yf - 4, "1.0");
+    for(int y = 0; y <= 100; y+=10) {
+        line(x0 - 2, y0 + y, x0 + 2, y0 + y);
+    }
+
     line(x0, y0, x0, yf + 8);
     line(x0 - 4, yf + 4, x0, yf + 8);
     line(x0 + 4, yf + 4, x0, yf + 8);
-
-    text(x0 - 16, y0 - 4, "0");
-    text(x0 - 36, y0 + ((yf - y0)/2) - 4, "128");
-    text(x0 - 36, yf - 4, "256");
-    line(x0 - 4, y0 + ((yf - y0)/2), x0 + 4, y0 + ((yf - y0)/2));
-    line(x0 - 4, yf, x0 + 4, yf);
 }
