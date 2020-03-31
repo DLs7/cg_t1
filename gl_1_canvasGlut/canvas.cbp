@@ -45,7 +45,6 @@
 		</Linker>
 		<Unit filename="include/GL/glut.h" />
 		<Unit filename="src/Bmp.h" />
-		<Unit filename="src/Bola.h" />
 		<Unit filename="src/Botao.h" />
 		<Unit filename="src/Relogio.cpp" />
 		<Unit filename="src/Relogio.h" />

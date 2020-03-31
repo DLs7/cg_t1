@@ -45,12 +45,13 @@ int opcao  = 49;
 int auxOpcao = opcao;
 int rotation = 1;
 
-int screenWidth = 0, screenHeight = 0; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
-
 int x0, xf, y0, yf;
 
-int imgOffset, offset = 32, graphOffset = 256 + (2 * offset) + 8;
+int offset = 32, graphOffset = 256 + (2 * offset) + 8;
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
+
+int screenWidth = 0, screenHeight = 0; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
+int minScreenHeight = 200 + (2 * offset);
 
 void startButtons(int size_x, int size_y) {
     bf = new Botao(x0, yf + offset, size_x, size_y, "F", 1, 1, 1);
@@ -86,32 +87,32 @@ void renderButtons() {
 
 void fullRender()
 {
-    bmp->renderBitmap(offset, imgOffset, 1, 1, 1, rotation);
+    bmp->renderBitmap(offset, offset, 1, 1, 1, rotation);
     bmp->renderHistogram(x0, y0, xf, yf, 1, 1, 1);
 }
 
 void redRender()
 {
-    bmp->renderBitmap(offset, imgOffset, 1, 0, 0, rotation);
+    bmp->renderBitmap(offset, offset, 1, 0, 0, rotation);
     bmp->renderHistogram(x0, y0, xf, yf, 1, 0, 0);
 }
 
 void greenRender()
 {
-    bmp->renderBitmap(offset, imgOffset, 0, 1, 0, rotation);
+    bmp->renderBitmap(offset, offset, 0, 1, 0, rotation);
     bmp->renderHistogram(x0, y0, xf, yf, 0, 1, 0);
 }
 
 void blueRender()
 {
-    bmp->renderBitmap(offset, imgOffset, 0, 0, 1, rotation);
+    bmp->renderBitmap(offset, offset, 0, 0, 1, rotation);
     bmp->renderHistogram(x0, y0, xf, yf, 0, 0, 1);
 }
 
 void monoRender()
 {
-    bmp->renderBitmapMonochrome(offset, imgOffset, rotation);
-    bmp->renderHistogramMonochrome(x0, y0, xf, yf);
+    bmp->renderBitmap(offset, offset, 0, 0, 0, rotation);
+    bmp->renderHistogram(x0, y0, xf, yf, 0, 0, 0);
 }
 
 //funcao chamada continuamente. Deve-se controlar o que desenhar por meio de variaveis globais
@@ -208,7 +209,7 @@ int main(void)
    screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
    screenHeight = (2 * offset) + bmp->getHeight();
 
-   imgOffset = screenHeight - bmp->getHeight() - offset;
+   if(screenHeight < minScreenHeight) screenHeight = minScreenHeight;
 
    x0 = screenWidth + offset - graphOffset;
    y0 = offset + offset/2;

@@ -28,13 +28,7 @@ Bmp::Bmp(const char *fileName)
    }
 
    startCount();
-   printf("\nStart arrays.");
-
    countColors();
-   printf("\nColors counted.");
-
-   countLum();
-   printf("\nLuminosity counted.");
 }
 
 uchar* Bmp::getImage()
@@ -174,149 +168,36 @@ void Bmp::renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotatio
 
     int sum = 0;
 
-    if(rotation == 1) {
-        for(int y = 0; y < height; y++) {
-            for(int x = 0; x < width; x++) {
-                float red = ((float)data[sum]/255) * r;
-                float green = ((float)data[sum + 1]/255) * g;
-                float blue = ((float)data[sum + 2]/255) * b;
-
-                color(red, green, blue);
-                point(pos_x + x, pos_y + y);
-
-                sum += 3;
-            }
-        }
-    } else if (rotation == 2) {
-        for(int y = height; y > 0; y--) {
-            for(int x = width; x > 0; x--) {
-                float red = ((float)data[sum]/255) * r;
-                float green = ((float)data[sum + 1]/255) * g;
-                float blue = ((float)data[sum + 2]/255) * b;
-
-                color(red, green, blue);
-                point(pos_x + x, pos_y + y);
-
-                sum += 3;
-            }
-        }
-    } else if (rotation == 3) {
-        for(int x = width; x > 0; x--) {
-            for(int y = 0; y < width; y++) {
-                float red = ((float)data[sum]/255) * r;
-                float green = ((float)data[sum + 1]/255) * g;
-                float blue = ((float)data[sum + 2]/255) * b;
-
-                color(red, green, blue);
-                point(pos_x + x, pos_y + y);
-
-                sum += 3;
-            }
-        }
-    } else if (rotation == 4) {
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < width; y++) {
-                float red = ((float)data[sum]/255) * r;
-                float green = ((float)data[sum + 1]/255) * g;
-                float blue = ((float)data[sum + 2]/255) * b;
-
-                color(red, green, blue);
-                point(pos_x + x, pos_y + y);
-
-                sum += 3;
-            }
-        }
-    }
-}
-
-void Bmp::renderBitmapMonochrome(int pos_x, int pos_y, int rotation)
-{
-    clear(0,0,0);
-
-    int sum = 0;
-
-    if(rotation == 1) {
-        for(int y = 0; y < height; y++) {
-            for(int x = 0; x < width; x++) {
-                float red = ((float)data[sum]/255) * 0.299;
-                float green = ((float)data[sum + 1]/255) * 0.587;
-                float blue = ((float)data[sum + 2]/255) * 0.114;
-
-                float lum = red + green + blue;
-
-                color(lum, lum, lum);
-                point(pos_x + x, pos_y + y);
-
-                sum += 3;
-            }
-        }
-    } else if (rotation == 2) {
-        for(int y = height; y > 0; y--) {
-            for(int x = width; x > 0; x--) {
-                float red = ((float)data[sum]/255) * 0.299;
-                float green = ((float)data[sum + 1]/255) * 0.587;
-                float blue = ((float)data[sum + 2]/255) * 0.114;
-
-                float lum = red + green + blue;
-
-                color(lum, lum, lum);
-                point(pos_x + x, pos_y + y);
-
-                sum += 3;
-            }
-        }
-    } else if (rotation == 3) {
-        for(int x = width; x > 0; x--) {
-            for(int y = 0; y < width; y++) {
-                float red = ((float)data[sum]/255) * 0.299;
-                float green = ((float)data[sum + 1]/255) * 0.587;
-                float blue = ((float)data[sum + 2]/255) * 0.114;
-
-                float lum = red + green + blue;
-
-                color(lum, lum, lum);
-                point(pos_x + x, pos_y + y);
-
-                sum += 3;
-            }
-        }
-    } else if (rotation == 4) {
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < width; y++) {
-                float red = ((float)data[sum]/255) * 0.299;
-                float green = ((float)data[sum + 1]/255) * 0.587;
-                float blue = ((float)data[sum + 2]/255) * 0.114;
-
-                float lum = red + green + blue;
-
-                color(lum, lum, lum);
-                point(pos_x + x, pos_y + y);
-
-                sum += 3;
-            }
-        }
-    }
-}
-
-
-void Bmp::countColors()
-{
-    int sum = 0;
-
     for(int y = 0; y < height; y++) {
         for(int x = 0; x < width; x++) {
-            r_count[data[sum]]++;
-            g_count[data[sum + 1]]++;
-            b_count[data[sum + 2]]++;
+            if(!r && !g && !b) {
+                float red = ((float)data[sum]/255) * 0.299;
+                float green = ((float)data[sum + 1]/255) * 0.587;
+                float blue = ((float)data[sum + 2]/255) * 0.114;
+
+                float lum = red + green + blue;
+
+                color(lum, lum, lum);
+            } else {
+                float red = ((float)data[sum]/255) * r;
+                float green = ((float)data[sum + 1]/255) * g;
+                float blue = ((float)data[sum + 2]/255) * b;
+
+                color(red, green, blue);
+            }
+
+            if (rotation == 1) {
+                point(pos_x + x, pos_y + y);
+            } else if (rotation == 2) {
+                point(pos_x + width - x, pos_y + height - y);
+            } else if (rotation == 3) {
+                point(pos_x + height - y, pos_y + x);
+            } else if (rotation == 4) {
+                point(pos_x + y, pos_y + width - x);
+            }
 
             sum += 3;
         }
-    }
-
-    for(int i = 0; i < 256; i++) {
-        if(r_count[i] > r_max) r_max = r_count[i];
-        if(g_count[i] > g_max) g_max = g_count[i];
-        if(b_count[i] > b_max) b_max = b_count[i];
     }
 }
 
@@ -324,52 +205,26 @@ void Bmp::renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b
 {
     graph(x0, y0, xf, yf);
 
-    for(int x = 0; x < 256; x++) {
-        color(1, 0, 0);
-        int r_pos = (int)round((r_count[x] * 100)/r_max);
-        if(r == true) point(x0 + x, y0 + r_pos);
-
-        color(0, 1, 0);
-        int g_pos = (int)round((g_count[x] * 100)/g_max);
-        if(g == true) point(x0 + x, y0 + g_pos);
-
-        color(0, 0, 1);
-        int b_pos = (int)round((b_count[x] * 100)/b_max);
-        if(b == true) point(x0 + x, y0 + b_pos);
-    }
-}
-
-void Bmp::countLum()
-{
-    int sum = 0;
-
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
-            float red = ((float)data[sum]) * 0.299;
-            float green = ((float)data[sum + 1]) * 0.587;
-            float blue = ((float)data[sum + 2]) * 0.114;
-
-            float lum = red + green + blue;
-
-            l_count[(int)lum]++;
-
-            sum += 3;
+    if(!r && !g && !b) {
+        for(int x = 0; x < 256; x++) {
+            color(1, 1, 1);
+            int l_pos = (int)round((l_count[x] * 100)/l_max);
+            point(x0 + x, y0 + l_pos);
         }
-    }
+    } else {
+        for(int x = 0; x < 256; x++) {
+            color(1, 0, 0);
+            int r_pos = (int)round((r_count[x] * 100)/r_max);
+            if(r == true) point(x0 + x, y0 + r_pos);
 
-    for(int i = 0; i < 256; i++) {
-        if(l_count[i] > l_max) l_max = l_count[i];
-    }
-}
+            color(0, 1, 0);
+            int g_pos = (int)round((g_count[x] * 100)/g_max);
+            if(g == true) point(x0 + x, y0 + g_pos);
 
-void Bmp::renderHistogramMonochrome(int x0, int y0, int xf, int yf)
-{
-    graph(x0, y0, xf, yf);
-
-    for(int x = 0; x < 256; x++) {
-        color(1, 1, 1);
-        int l_pos = (int)round((l_count[x] * 100)/l_max);
-        point(x0 + x, y0 + l_pos);
+            color(0, 0, 1);
+            int b_pos = (int)round((b_count[x] * 100)/b_max);
+            if(b == true) point(x0 + x, y0 + b_pos);
+        }
     }
 }
 
@@ -378,8 +233,8 @@ void Bmp::graph(int x0, int y0, int xf, int yf)
     color(1, 1, 1);
 
     text(x0 - 4, y0 - 16, "0");
-    text(x0 + ((xf - x0)/2) - 18, y0 - 16, "128");
-    text(xf - 18, y0 - 16, "256");
+    text(x0 + ((xf - x0)/2) - 18, y0 - 16, "127");
+    text(xf - 22, y0 - 16, "255");
     for(int x = 0; x <= 256; x += 16) {
         line(x0 + x, y0 - 2, x0 + x, y0 + 2);
     }
@@ -388,7 +243,7 @@ void Bmp::graph(int x0, int y0, int xf, int yf)
     line(xf + 4, y0 + 4, xf + 8, y0);
     line(xf + 4, y0 - 4, xf + 8, y0);
 
-    text(x0 - 16, y0 - 4, "0.0");
+    text(x0 - 16, y0 - 4, "0");
     text(x0 - 36, y0 + ((yf - y0)/2) - 4, "0.5");
     text(x0 - 36, yf - 4, "1.0");
     for(int y = 0; y <= 100; y+=10) {
@@ -398,4 +253,32 @@ void Bmp::graph(int x0, int y0, int xf, int yf)
     line(x0, y0, x0, yf + 8);
     line(x0 - 4, yf + 4, x0, yf + 8);
     line(x0 + 4, yf + 4, x0, yf + 8);
+}
+
+void Bmp::countColors()
+{
+    int sum = 0;
+
+    for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
+            float red = (float)data[sum];
+            float green = (float)data[sum + 1];
+            float blue = (float)data[sum + 2];
+            float lum = (red * 0.299) + (green * 0.587) + (blue * 0.114);
+
+            r_count[(int)red]++;
+            g_count[(int)green]++;
+            b_count[(int)blue]++;
+            l_count[(int)lum]++;
+
+            sum += 3;
+        }
+    }
+
+    for(int i = 0; i < 256; i++) {
+        if(r_count[i] > r_max) r_max = r_count[i];
+        if(g_count[i] > g_max) g_max = g_count[i];
+        if(b_count[i] > b_max) b_max = b_count[i];
+        if(l_count[i] > l_max) l_max = l_count[i];
+    }
 }
