@@ -162,6 +162,34 @@ void Bmp::startCount()
     }
 }
 
+void Bmp::countColors()
+{
+    int sum = 0;
+
+    for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
+            float red = (float)data[sum];
+            float green = (float)data[sum + 1];
+            float blue = (float)data[sum + 2];
+            float lum = (red * 0.299) + (green * 0.587) + (blue * 0.114);
+
+            r_count[(int)red]++;
+            g_count[(int)green]++;
+            b_count[(int)blue]++;
+            l_count[(int)lum]++;
+
+            sum += 3;
+        }
+    }
+
+    for(int i = 0; i < 256; i++) {
+        if(r_count[i] > r_max) r_max = r_count[i];
+        if(g_count[i] > g_max) g_max = g_count[i];
+        if(b_count[i] > b_max) b_max = b_count[i];
+        if(l_count[i] > l_max) l_max = l_count[i];
+    }
+}
+
 void Bmp::renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotation)
 {
     clear(0,0,0);
@@ -269,32 +297,4 @@ void Bmp::graph(int x0, int y0, int xf, int yf)
     line(x0, y0, x0, yf + 8);
     line(x0 - 4, yf + 4, x0, yf + 8);
     line(x0 + 4, yf + 4, x0, yf + 8);
-}
-
-void Bmp::countColors()
-{
-    int sum = 0;
-
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
-            float red = (float)data[sum];
-            float green = (float)data[sum + 1];
-            float blue = (float)data[sum + 2];
-            float lum = (red * 0.299) + (green * 0.587) + (blue * 0.114);
-
-            r_count[(int)red]++;
-            g_count[(int)green]++;
-            b_count[(int)blue]++;
-            l_count[(int)lum]++;
-
-            sum += 3;
-        }
-    }
-
-    for(int i = 0; i < 256; i++) {
-        if(r_count[i] > r_max) r_max = r_count[i];
-        if(g_count[i] > g_max) g_max = g_count[i];
-        if(b_count[i] > b_max) b_max = b_count[i];
-        if(l_count[i] > l_max) l_max = l_count[i];
-    }
 }

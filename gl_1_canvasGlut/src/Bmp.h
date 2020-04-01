@@ -47,7 +47,7 @@ class Bmp
 {
 private:
    int width, height, imagesize, bytesPerLine, bits, r_max, g_max, b_max, l_max;
-   unsigned char r_count[256], g_count[256], b_count[256], l_count[256];
+   int r_count[256], g_count[256], b_count[256], l_count[256];
    unsigned char *data;
 
    HEADER     header;
