@@ -8,21 +8,21 @@ class Botao{
   char label[100];
 
 public:
-  Botao(float _x, float _y, float _larg, float _alt, char *_label, float _r, float _g, float _b)
+  Botao(float _x, float _y, float _larg, float _alt, char *_label, bool _r, bool _g, bool _b)
   {
      altura  = _alt;
      largura = _larg;
      x = _x;
      y = _y;
      strcpy(label, _label);
-     r = _r;
-     g = _g;
-     b = _b;
+     if(_r) r = 0.5;
+     if(_g) g = 0.5;
+     if(_b) b = 0.5;
   }
 
-  void Render()
+  void Render(bool active)
   {
-      color(r, g, b);
+      color(r + (r * active), g + (g * active), b + (b * active));
       rectFill(x, y, x + largura, y + altura);
       color(0, 0, 0);
       text(x + 4, y + altura/4, label); //escreve o label do botao mais ou menos ao centro.

@@ -228,9 +228,20 @@ void Bmp::renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b
     }
 }
 
+int Bmp::max4(int a, int b, int c, int d) {
+    int e = a > b ? a : b;
+    int f = c > d ? c : d;
+    return e > f ? e : f;
+}
+
 void Bmp::graph(int x0, int y0, int xf, int yf)
 {
     color(1, 1, 1);
+
+    char b[3];
+
+    int max = max4(r_max, g_max, b_max, l_max);
+    int med = max/2;
 
     text(x0 - 4, y0 - 16, "0");
     text(x0 + ((xf - x0)/2) - 18, y0 - 16, "127");
@@ -244,8 +255,13 @@ void Bmp::graph(int x0, int y0, int xf, int yf)
     line(xf + 4, y0 - 4, xf + 8, y0);
 
     text(x0 - 16, y0 - 4, "0");
-    text(x0 - 36, y0 + ((yf - y0)/2) - 4, "0.5");
-    text(x0 - 36, yf - 4, "1.0");
+
+    sprintf(b, "%d", med);
+    text(x0 - 36, y0 + ((yf - y0)/2) - 4, b);
+
+    sprintf(b, "%d", max);
+    text(x0 - 36, yf - 4, b);
+
     for(int y = 0; y <= 100; y+=10) {
         line(x0 - 2, y0 + y, x0 + 2, y0 + y);
     }

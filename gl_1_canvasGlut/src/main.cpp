@@ -44,6 +44,7 @@ Botao *bminus = NULL;
 int opcao  = 49;
 int auxOpcao = opcao;
 int rotation = 1;
+bool f = true, r = true, b = true, g = true, m = false;
 
 int x0, xf, y0, yf;
 
@@ -58,7 +59,7 @@ void startButtons(int size_x, int size_y) {
     br = new Botao(x0 + offset, yf + offset, size_x, size_y, "R", 1, 0, 0);
     bg = new Botao(x0 + (2 * offset), yf +  offset, size_x, size_y, "G", 0, 1, 0);
     bb = new Botao(x0 + (3 * offset), yf + offset, size_x, size_y, "B", 0, 0, 1);
-    bl = new Botao(x0 + (4 * offset), yf + offset, size_x, size_y, "M", 0.5, 0.5, 0.5);
+    bl = new Botao(x0 + (4 * offset), yf + offset, size_x, size_y, "M", 1, 1, 1);
 
     bplus = new Botao(x0, yf + (2 * offset), size_x, size_y, "+", 1, 1, 1);
     bminus = new Botao(x0 + offset, yf + (2 * offset), size_x, size_y, "-", 1, 1, 1);
@@ -70,49 +71,19 @@ void startButtons(int size_x, int size_y) {
 }
 
 void renderButtons() {
-    bf->Render();
-    br->Render();
-    bg->Render();
-    bb->Render();
-    bl->Render();
+    bf->Render(f);
+    br->Render(r);
+    bg->Render(g);
+    bb->Render(b);
+    bl->Render(m);
 
-    bplus->Render();
-    bminus->Render();
+    bplus->Render(true);
+    bminus->Render(true);
 
-    bup->Render();
-    bdown->Render();
-    bleft->Render();
-    bright->Render();
-}
-
-void fullRender()
-{
-    bmp->renderBitmap(offset, offset, 1, 1, 1, rotation);
-    bmp->renderHistogram(x0, y0, xf, yf, 1, 1, 1);
-}
-
-void redRender()
-{
-    bmp->renderBitmap(offset, offset, 1, 0, 0, rotation);
-    bmp->renderHistogram(x0, y0, xf, yf, 1, 0, 0);
-}
-
-void greenRender()
-{
-    bmp->renderBitmap(offset, offset, 0, 1, 0, rotation);
-    bmp->renderHistogram(x0, y0, xf, yf, 0, 1, 0);
-}
-
-void blueRender()
-{
-    bmp->renderBitmap(offset, offset, 0, 0, 1, rotation);
-    bmp->renderHistogram(x0, y0, xf, yf, 0, 0, 1);
-}
-
-void monoRender()
-{
-    bmp->renderBitmap(offset, offset, 0, 0, 0, rotation);
-    bmp->renderHistogram(x0, y0, xf, yf, 0, 0, 0);
+    bup->Render(true);
+    bdown->Render(true);
+    bleft->Render(true);
+    bright->Render(true);
 }
 
 //funcao chamada continuamente. Deve-se controlar o que desenhar por meio de variaveis globais
@@ -127,40 +98,14 @@ void render()
    else if ( opcao == 200 ) rotation = 3;
    else if ( opcao == 202 ) rotation = 4;
 
-   if ( opcao == 49 )
-   {
-      fullRender();
-      auxOpcao = opcao;
-   }
-   else if( opcao == 50 ) //50 -> vermelho
-   {
-      redRender();
-      auxOpcao = opcao;
-   }
-   else if( opcao == 51 ) //'3' -> verde
-   {
-      greenRender();
-      auxOpcao = opcao;
-   }
-   else if( opcao == 52 ) //'4' -> azul
-   {
-      blueRender();
-      auxOpcao = opcao;
-   }
-   else if ( opcao == 53 ) {
-      monoRender();
-      auxOpcao = opcao;
-   }
-   else
-   {
-      opcao = auxOpcao;
+   if(r || g || b) m = false;
+   if(!r || !g || !b) f = false;
 
-      if(opcao == 49) fullRender();
-      else if(opcao == 50) redRender();
-      else if(opcao == 51) greenRender();
-      else if(opcao == 52) blueRender();
-      else if(opcao == 53) monoRender();
-   }
+   if(r && g && b) f = true;
+   if(!r && !g && !b) m = true;
+
+   bmp->renderBitmap(offset, offset, r, g, b, rotation);
+   bmp->renderHistogram(x0, y0, xf, yf, r, g, b);
 }
 
 //funcao chamada toda vez que uma tecla for pressionada.
@@ -179,6 +124,15 @@ void keyboardUp(int key)
    printf("\nLiberou: %d" , key);
 }
 
+void fullButton(bool x, bool y)
+{
+    f = x;
+    r = x;
+    g = x;
+    b = x;
+    m = y;
+}
+
 //funcao para tratamento de mouse: cliques,  movimentos e arrastos
 void mouse(int button, int state, int wheel, int direction, int x, int y)
 {
@@ -187,11 +141,12 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
 
    if( state == 0 ) //clicou
    {
-       if(bf->Colidiu(x, y)) opcao = 49;
-       if(br->Colidiu(x, y)) opcao = 50;
-       if(bg->Colidiu(x, y)) opcao = 51;
-       if(bb->Colidiu(x, y)) opcao = 52;
-       if(bl->Colidiu(x, y)) opcao = 53;
+       if(bf->Colidiu(x, y)) fullButton(true, false);
+       if(br->Colidiu(x, y)) r = !r;
+       if(bg->Colidiu(x, y)) g = !g;
+       if(bb->Colidiu(x, y)) b = !b;
+       if(bl->Colidiu(x, y)) fullButton(false, true);
+
        if(bup->Colidiu(x, y)) rotation = 1;
        if(bdown->Colidiu(x, y)) rotation = 2;
        if(bleft->Colidiu(x, y)) rotation = 3;
@@ -206,8 +161,16 @@ int main(void)
    bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\landscape.bmp");
    bmp->convertBGRtoRGB();
 
-   screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
-   screenHeight = (2 * offset) + bmp->getHeight();
+   if(bmp->getHeight() > bmp->getWidth()) {
+     screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
+     screenHeight = (2 * offset) + bmp->getWidth();
+   } else if(bmp->getWidth() > bmp->getHeight()) {
+     screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
+     screenHeight = (2 * offset) + bmp->getWidth();
+   } else {
+     screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
+     screenHeight = (2 * offset) + bmp->getHeight();
+   }
 
    if(screenHeight < minScreenHeight) screenHeight = minScreenHeight;
 

@@ -58,6 +58,7 @@ private:
    void countColors();
    void countLum();
    void graph(int x0, int y0, int xf, int yf);
+   int max4(int a, int b, int c, int d);
 
 public:
    Bmp(const char *fileName);
