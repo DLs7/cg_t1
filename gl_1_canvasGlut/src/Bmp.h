@@ -46,7 +46,7 @@ typedef struct {
 class Bmp
 {
 private:
-   int width, height, imagesize, bytesPerLine, bits, r_max, g_max, b_max, l_max;
+   int width, height, imagesize, bytesPerLine, bits, r_max, r_maxCount, g_max, g_maxCount, b_max, b_maxCount, l_max, l_maxCount, max;
    int r_count[256], g_count[256], b_count[256], l_count[256];
    unsigned char *data;
 
@@ -58,7 +58,8 @@ private:
    void countColors();
    void countLum();
    void graph(int x0, int y0, int xf, int yf);
-   int max4(int a, int b, int c, int d);
+   void drawMaxGraph(int x0, int y0, bool r, bool g, bool b);
+   int max3(int a, int b, int c);
 
 public:
    Bmp(const char *fileName);

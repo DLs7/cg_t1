@@ -54,15 +54,22 @@ int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da ren
 int screenWidth = 0, screenHeight = 0; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 int minScreenHeight = 200 + (2 * offset);
 
-void startButtons(int size_x, int size_y) {
+void startButtons(int size_x, int size_y)
+{
+    // RGB buttons
+
     bf = new Botao(x0, yf + offset, size_x, size_y, "F", 1, 1, 1);
     br = new Botao(x0 + offset, yf + offset, size_x, size_y, "R", 1, 0, 0);
     bg = new Botao(x0 + (2 * offset), yf +  offset, size_x, size_y, "G", 0, 1, 0);
     bb = new Botao(x0 + (3 * offset), yf + offset, size_x, size_y, "B", 0, 0, 1);
     bl = new Botao(x0 + (4 * offset), yf + offset, size_x, size_y, "M", 1, 1, 1);
 
+    // Scale buttons
+
     bplus = new Botao(x0, yf + (2 * offset), size_x, size_y, "+", 1, 1, 1);
     bminus = new Botao(x0 + offset, yf + (2 * offset), size_x, size_y, "-", 1, 1, 1);
+
+    // Rotations buttons
 
     bup = new Botao(x0 + (6.5 * offset), yf + (2 * offset), size_x, size_y, "^", 1, 1, 1);
     bdown = new Botao(x0 + (6.5 * offset), yf + offset, size_x, size_y, "v", 1, 1, 1);
@@ -70,15 +77,22 @@ void startButtons(int size_x, int size_y) {
     bright = new Botao(x0 + (7.5 * offset), yf + offset, size_x, size_y, ">", 1, 1, 1);
 }
 
-void renderButtons() {
+void renderButtons()
+{
+    // RGB buttons
+
     bf->Render(f);
     br->Render(r);
     bg->Render(g);
     bb->Render(b);
     bl->Render(m);
 
+    // Scale buttons
+
     bplus->Render(true);
     bminus->Render(true);
+
+    // Rotation buttons
 
     bup->Render(true);
     bdown->Render(true);
@@ -94,9 +108,9 @@ void render()
    renderButtons();
 
    if ( opcao == 201 ) rotation = 1;
-   else if ( opcao == 203 ) rotation = 2;
-   else if ( opcao == 200 ) rotation = 3;
-   else if ( opcao == 202 ) rotation = 4;
+   if ( opcao == 203 ) rotation = 2;
+   if ( opcao == 200 ) rotation = 3;
+   if ( opcao == 202 ) rotation = 4;
 
    if(r || g || b) m = false;
    if(!r || !g || !b) f = false;
@@ -120,18 +134,20 @@ void fullButton(bool x, bool y)
 //funcao chamada toda vez que uma tecla for pressionada.
 void keyboard(int key)
 {
-   printf("\nTecla: %d" , key);
    if(key == 49) fullButton(true, false);
    if(key == 50) r = !r;
    if(key == 51) g = !g;
    if(key == 52) b = !b;
    if(key == 53) fullButton(false, true);
+   if(key == 201) rotation = 1;
+   if(key == 203) rotation = 2;
+   if(key == 200) rotation = 3;
+   if(key == 202) rotation = 4;
 }
 
 //funcao chamada toda vez que uma tecla for liberada
 void keyboardUp(int key)
 {
-   //printf("\nLiberou: %d" , key);
 }
 
 //funcao para tratamento de mouse: cliques,  movimentos e arrastos
@@ -153,34 +169,34 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        if(bleft->Colidiu(x, y)) rotation = 3;
        if(bright->Colidiu(x, y)) rotation = 4;
    }
-
-   //printf("\nmouse %d %d %d %d %d %d", button, state, wheel, direction,  x, y);
 }
 
-int main(void)
-{
-   bmp = new Bmp(".\\gl_1_canvasGlut\\resources\\img1.bmp");
+void loadBmpAndSetSizes(char *path) {
+   bmp = new Bmp(path);
    bmp->convertBGRtoRGB();
 
    if(bmp->getHeight() > bmp->getWidth()) {
-     screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
-     screenHeight = (2 * offset) + bmp->getWidth();
-   } else if(bmp->getWidth() > bmp->getHeight()) {
-     screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
-     screenHeight = (2 * offset) + bmp->getWidth();
+     screenWidth = (2 * offset) + bmp->getHeight() + graphOffset;
+     screenHeight = (2 * offset) + bmp->getHeight();
    } else {
      screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
-     screenHeight = (2 * offset) + bmp->getHeight();
+     screenHeight = (2 * offset) + bmp->getWidth();
    }
 
    if(screenHeight < minScreenHeight) screenHeight = minScreenHeight;
 
    x0 = screenWidth + offset - graphOffset;
-   y0 = offset + offset/2;
    xf = screenWidth - offset;
-   yf = 100 + offset + offset/2;
+
+   y0 = 1.5 * offset;
+   yf = 100 + 1.5 * offset;
 
    startButtons(offset/2, offset/2);
+}
+
+int main(void)
+{
+   loadBmpAndSetSizes(".\\gl_1_canvasGlut\\resources\\thomas.bmp");
 
    initCanvas(&screenWidth, &screenHeight, "BMP - Pressione 1, 2, 3, 4 ou 5");
 
