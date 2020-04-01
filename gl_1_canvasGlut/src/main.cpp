@@ -108,22 +108,6 @@ void render()
    bmp->renderHistogram(x0, y0, xf, yf, r, g, b);
 }
 
-//funcao chamada toda vez que uma tecla for pressionada.
-void keyboard(int key)
-{
-   printf("\nTecla: %d" , key);
-   if( key < 204 )
-   {
-      opcao = key;
-   }
-}
-
-//funcao chamada toda vez que uma tecla for liberada
-void keyboardUp(int key)
-{
-   printf("\nLiberou: %d" , key);
-}
-
 void fullButton(bool x, bool y)
 {
     f = x;
@@ -131,6 +115,23 @@ void fullButton(bool x, bool y)
     g = x;
     b = x;
     m = y;
+}
+
+//funcao chamada toda vez que uma tecla for pressionada.
+void keyboard(int key)
+{
+   printf("\nTecla: %d" , key);
+   if(key == 49) fullButton(true, false);
+   if(key == 50) r = !r;
+   if(key == 51) g = !g;
+   if(key == 52) b = !b;
+   if(key == 53) fullButton(false, true);
+}
+
+//funcao chamada toda vez que uma tecla for liberada
+void keyboardUp(int key)
+{
+   //printf("\nLiberou: %d" , key);
 }
 
 //funcao para tratamento de mouse: cliques,  movimentos e arrastos
