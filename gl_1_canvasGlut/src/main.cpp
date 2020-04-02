@@ -134,11 +134,21 @@ void fullButton(bool x, bool y)
 //funcao chamada toda vez que uma tecla for pressionada.
 void keyboard(int key)
 {
+   // RGB keys
+
    if(key == 49) fullButton(true, false);
    if(key == 50) r = !r;
    if(key == 51) g = !g;
    if(key == 52) b = !b;
    if(key == 53) fullButton(false, true);
+
+   // Scale keys
+
+   if(key == 61) bmp->resizeImage((bmp->getWidth() * 2), (bmp->getHeight() * 2));
+   if(key == 45) bmp->resizeImage((bmp->getWidth()/2), (bmp->getHeight()/2));
+
+   // Rotation keys
+
    if(key == 201) rotation = 1;
    if(key == 203) rotation = 2;
    if(key == 200) rotation = 3;
@@ -163,6 +173,9 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        if(bg->Colidiu(x, y)) g = !g;
        if(bb->Colidiu(x, y)) b = !b;
        if(bl->Colidiu(x, y)) fullButton(false, true);
+
+       if(bplus->Colidiu(x, y)) bmp->resizeImage((bmp->getWidth() * 2), (bmp->getHeight() * 2));
+       if(bminus->Colidiu(x, y)) bmp->resizeImage((bmp->getWidth()/2), (bmp->getHeight()/2));
 
        if(bup->Colidiu(x, y)) rotation = 1;
        if(bdown->Colidiu(x, y)) rotation = 2;
@@ -196,9 +209,9 @@ void loadBmpAndSetSizes(char *path) {
 
 int main(void)
 {
-   loadBmpAndSetSizes(".\\gl_1_canvasGlut\\resources\\thomas.bmp");
+   loadBmpAndSetSizes(".\\gl_1_canvasGlut\\resources\\img1.bmp");
 
-   initCanvas(&screenWidth, &screenHeight, "BMP - Pressione 1, 2, 3, 4 ou 5");
+   initCanvas(&screenWidth, &screenHeight, "T1 - Augusto Gai Dal'Asta");
 
    runCanvas();
 }

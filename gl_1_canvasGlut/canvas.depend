@@ -251,13 +251,14 @@
 1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1-master\gl_1_canvasglut\src\botao.h
 	"gl_canvas2d.h"
 
-1585768620 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\bmp.cpp
+1585868659 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\bmp.cpp
 	"Bmp.h"
 	<string.h>
 	<stdbool.h>
+	<math.h>
 	"gl_canvas2d.h"
 
-1585767802 c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\bmp.h
+1585868617 c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\bmp.h
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
@@ -267,7 +268,7 @@
 	"gl_canvas2d.h"
 	<GL/glut.h>
 
-1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\gl_canvas2d.h
+1585867962 c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\gl_canvas2d.h
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
@@ -301,7 +302,7 @@
 1585454453 c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\relogio.h
 	"gl_canvas2d.h"
 
-1585770802 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\main.cpp
+1585867956 source:c:\users\augus\onedrive\햞ea de trabalho\cg_t1\gl_1_canvasglut\src\main.cpp
 	<GL/glut.h>
 	<GL/freeglut_ext.h>
 	<math.h>

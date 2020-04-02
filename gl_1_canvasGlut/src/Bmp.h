@@ -46,9 +46,10 @@ typedef struct {
 class Bmp
 {
 private:
-   int width, height, imagesize, bytesPerLine, bits, r_max, r_maxCount, g_max, g_maxCount, b_max, b_maxCount, l_max, l_maxCount, max;
+   bool resized;
+   int width, height, temp_width, temp_height, imagesize, bytesPerLine, bits, r_max, r_maxCount, g_max, g_maxCount, b_max, b_maxCount, l_max, l_maxCount, max;
    int r_count[256], g_count[256], b_count[256], l_count[256];
-   unsigned char *data;
+   unsigned char *data, *temp;
 
    HEADER     header;
    INFOHEADER info;
@@ -59,7 +60,7 @@ private:
    void countLum();
    void graph(int x0, int y0, int xf, int yf);
    void drawMaxGraph(int x0, int y0, bool r, bool g, bool b);
-   int max3(int a, int b, int c);
+   int  max3(int a, int b, int c);
 
 public:
    Bmp(const char *fileName);
@@ -69,6 +70,7 @@ public:
    void   convertBGRtoRGB(void);
    void   renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotation);
    void   renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b);
+   void   resizeImage(int new_x, int new_y);
 };
 
 #endif

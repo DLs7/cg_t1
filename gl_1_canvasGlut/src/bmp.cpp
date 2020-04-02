@@ -10,6 +10,7 @@
 #include "Bmp.h"
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 #include "gl_canvas2d.h"
 
 Bmp::Bmp(const char *fileName)
@@ -26,6 +27,8 @@ Bmp::Bmp(const char *fileName)
    {
       printf("Error: Invalid BMP filename");
    }
+
+   resized = false;
 
    startCount();
    countColors();
@@ -98,7 +101,7 @@ void Bmp::load(const char *fileName)
   width  = info.width;
   height = info.height;
   bits   = info.bits;
-  bytesPerLine =(3 * (width + 1) / 4) * 4;
+  bytesPerLine = (3 * (width + 1) / 4) * 4;
   imagesize    = bytesPerLine*height;
   int delta    = bytesPerLine - (3 * width);
 
@@ -208,6 +211,39 @@ void Bmp::countColors()
     }
 
     max = max3(r_maxCount, g_maxCount, b_maxCount);
+}
+
+void Bmp::resizeImage(int new_x, int new_y)
+{
+    float scale_x = (float)new_x/(float)width;
+    float scale_y = (float)new_y/(float)height;
+
+    int bpl = (3 * (new_x + 1)/4) * 4;
+    new_x = bpl/3;
+
+    unsigned char *temp = new unsigned char [bpl * new_y];
+
+    for (int y = 0; y < new_y; y++) {
+        for (int x = 0; x < new_x; x++) {
+            int new_pos = (y * bpl) + (x * 3);
+            int old_pos = floor(y/scale_y) * bytesPerLine + floor(x/scale_x) * 3;
+
+            temp[new_pos] = data[old_pos];
+            temp[new_pos + 1] = data[old_pos + 1];
+            temp[new_pos + 2] = data[old_pos + 2];
+        }
+    }
+
+    width = new_x;
+    height = new_y;
+
+    bytesPerLine = (3 * (width + 1) / 4) * 4;
+    imagesize    = bytesPerLine * height;
+    data = new unsigned char[imagesize];
+    memcpy(data, temp, imagesize);
+
+    startCount();
+    countColors();
 }
 
 void Bmp::renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotation)
