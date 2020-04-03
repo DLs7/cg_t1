@@ -47,9 +47,9 @@ class Bmp
 {
 private:
    bool resized;
-   int width, height, temp_width, temp_height, imagesize, bytesPerLine, bits, r_max, r_maxCount, g_max, g_maxCount, b_max, b_maxCount, l_max, l_maxCount, max;
+   int width, height, imagesize, bytesPerLine, bits, r_max, r_maxCount, g_max, g_maxCount, b_max, b_maxCount, l_max, l_maxCount, max;
    int r_count[256], g_count[256], b_count[256], l_count[256];
-   unsigned char *data, *temp;
+   unsigned char *data;
 
    HEADER     header;
    INFOHEADER info;

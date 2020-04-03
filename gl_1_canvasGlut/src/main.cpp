@@ -54,27 +54,30 @@ int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da ren
 int screenWidth = 0, screenHeight = 0; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 int minScreenHeight = 200 + (2 * offset);
 
+int hud_x = 0;
+int imgWidth = 0, imgHeight = 0;
+
 void startButtons(int size_x, int size_y)
 {
     // RGB buttons
 
-    bf = new Botao(x0, yf + offset, size_x, size_y, "F", 1, 1, 1);
-    br = new Botao(x0 + offset, yf + offset, size_x, size_y, "R", 1, 0, 0);
-    bg = new Botao(x0 + (2 * offset), yf +  offset, size_x, size_y, "G", 0, 1, 0);
-    bb = new Botao(x0 + (3 * offset), yf + offset, size_x, size_y, "B", 0, 0, 1);
-    bl = new Botao(x0 + (4 * offset), yf + offset, size_x, size_y, "M", 1, 1, 1);
+    bf = new Botao(x0, yf + offset, size_x, size_y, (char*)"F", 1, 1, 1);
+    br = new Botao(x0 + offset, yf + offset, size_x, size_y, (char*)"R", 1, 0, 0);
+    bg = new Botao(x0 + (2 * offset), yf +  offset, size_x, size_y, (char*)"G", 0, 1, 0);
+    bb = new Botao(x0 + (3 * offset), yf + offset, size_x, size_y, (char*)"B", 0, 0, 1);
+    bl = new Botao(x0 + (4 * offset), yf + offset, size_x, size_y, (char*)"M", 1, 1, 1);
 
     // Scale buttons
 
-    bplus = new Botao(x0, yf + (2 * offset), size_x, size_y, "+", 1, 1, 1);
-    bminus = new Botao(x0 + offset, yf + (2 * offset), size_x, size_y, "-", 1, 1, 1);
+    bplus = new Botao(x0, yf + (2 * offset), size_x, size_y, (char*)"+", 1, 1, 1);
+    bminus = new Botao(x0 + offset, yf + (2 * offset), size_x, size_y, (char*)"-", 1, 1, 1);
 
     // Rotations buttons
 
-    bup = new Botao(x0 + (6.5 * offset), yf + (2 * offset), size_x, size_y, "^", 1, 1, 1);
-    bdown = new Botao(x0 + (6.5 * offset), yf + offset, size_x, size_y, "v", 1, 1, 1);
-    bleft = new Botao(x0 + (5.5 * offset), yf + offset, size_x, size_y, "<", 1, 1, 1);
-    bright = new Botao(x0 + (7.5 * offset), yf + offset, size_x, size_y, ">", 1, 1, 1);
+    bup = new Botao(x0 + (6.5 * offset), yf + (2 * offset), size_x, size_y, (char*)"^", 1, 1, 1);
+    bdown = new Botao(x0 + (6.5 * offset), yf + offset, size_x, size_y, (char*)"v", 1, 1, 1);
+    bleft = new Botao(x0 + (5.5 * offset), yf + offset, size_x, size_y, (char*)"<", 1, 1, 1);
+    bright = new Botao(x0 + (7.5 * offset), yf + offset, size_x, size_y, (char*)">", 1, 1, 1);
 }
 
 void renderButtons()
@@ -105,6 +108,13 @@ void renderButtons()
 //Deve-se manter essa função com poucas linhas de codigo.
 void render()
 {
+   clear(0, 0, 0);
+   bmp->renderBitmap(offset, offset, r, g, b, rotation);
+
+   color(0, 0, 0);
+   rectFill(hud_x, 0, screenWidth, screenHeight);
+   rectFill(0, screenHeight - offset, hud_x, screenHeight);
+   bmp->renderHistogram(x0, y0, xf, yf, r, g, b);
    renderButtons();
 
    if ( opcao == 201 ) rotation = 1;
@@ -117,9 +127,6 @@ void render()
 
    if(r && g && b) f = true;
    if(!r && !g && !b) m = true;
-
-   bmp->renderBitmap(offset, offset, r, g, b, rotation);
-   bmp->renderHistogram(x0, y0, xf, yf, r, g, b);
 }
 
 void fullButton(bool x, bool y)
@@ -144,9 +151,16 @@ void keyboard(int key)
 
    // Scale keys
 
-   if(key == 61) bmp->resizeImage((bmp->getWidth() * 2), (bmp->getHeight() * 2));
-   if(key == 45) bmp->resizeImage((bmp->getWidth()/2), (bmp->getHeight()/2));
-
+   if(key == 61)  {
+      imgWidth = imgWidth * 2;
+      imgHeight = imgHeight * 2;
+      bmp->resizeImage(imgWidth, imgHeight);
+   }
+   if(key == 45) {
+      imgWidth = imgWidth / 2;
+      imgHeight = imgHeight / 2;
+      bmp->resizeImage(imgWidth, imgHeight);
+   }
    // Rotation keys
 
    if(key == 201) rotation = 1;
@@ -174,8 +188,17 @@ void mouse(int button, int state, int wheel, int direction, int x, int y)
        if(bb->Colidiu(x, y)) b = !b;
        if(bl->Colidiu(x, y)) fullButton(false, true);
 
-       if(bplus->Colidiu(x, y)) bmp->resizeImage((bmp->getWidth() * 2), (bmp->getHeight() * 2));
-       if(bminus->Colidiu(x, y)) bmp->resizeImage((bmp->getWidth()/2), (bmp->getHeight()/2));
+       if(bplus->Colidiu(x, y)) {
+           imgWidth = imgWidth * 2;
+           imgHeight = imgHeight * 2;
+           bmp->resizeImage(imgWidth, imgHeight);
+       }
+
+       if(bminus->Colidiu(x, y)) {
+           imgWidth = imgWidth / 2;
+           imgHeight = imgHeight / 2;
+           bmp->resizeImage(imgWidth, imgHeight);
+       }
 
        if(bup->Colidiu(x, y)) rotation = 1;
        if(bdown->Colidiu(x, y)) rotation = 2;
@@ -188,12 +211,19 @@ void loadBmpAndSetSizes(char *path) {
    bmp = new Bmp(path);
    bmp->convertBGRtoRGB();
 
-   if(bmp->getHeight() > bmp->getWidth()) {
-     screenWidth = (2 * offset) + bmp->getHeight() + graphOffset;
-     screenHeight = (2 * offset) + bmp->getHeight();
+   imgWidth = bmp->getWidth();
+   imgHeight = bmp->getHeight();
+
+   if(imgHeight > imgWidth) {
+     screenWidth = (2 * offset) + imgHeight + graphOffset;
+     screenHeight = (2 * offset) + imgHeight;
+
+     hud_x = offset + imgHeight;
    } else {
-     screenWidth = (2 * offset) + bmp->getWidth() + graphOffset;
-     screenHeight = (2 * offset) + bmp->getWidth();
+     screenWidth = (2 * offset) + imgWidth + graphOffset;
+     screenHeight = (2 * offset) + imgWidth;
+
+     hud_x = offset + imgWidth;
    }
 
    if(screenHeight < minScreenHeight) screenHeight = minScreenHeight;
@@ -209,9 +239,8 @@ void loadBmpAndSetSizes(char *path) {
 
 int main(void)
 {
-   loadBmpAndSetSizes(".\\gl_1_canvasGlut\\resources\\img1.bmp");
+   loadBmpAndSetSizes((char*)".\\gl_1_canvasGlut\\resources\\thomas.bmp");
 
    initCanvas(&screenWidth, &screenHeight, "T1 - Augusto Gai Dal'Asta");
-
    runCanvas();
 }

@@ -248,8 +248,6 @@ void Bmp::resizeImage(int new_x, int new_y)
 
 void Bmp::renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotation)
 {
-    clear(0,0,0);
-
     int sum = 0;
 
     for(int y = 0; y < height; y++) {
