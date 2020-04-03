@@ -28,10 +28,8 @@ Bmp::Bmp(const char *fileName)
       printf("Error: Invalid BMP filename");
    }
 
-   resized = false;
-
    startCount();
-   countColors();
+   countColors(width, height);
 }
 
 uchar* Bmp::getImage()
@@ -52,7 +50,7 @@ int Bmp::getHeight(void)
 void Bmp::convertBGRtoRGB()
 {
   unsigned char tmp;
-  if( data != NULL )
+  if( data != NULL  )
   {
      for(int y=0; y<height; y++)
      for(int x=0; x<width*3; x+=3)
@@ -63,6 +61,9 @@ void Bmp::convertBGRtoRGB()
         data[pos+2] = tmp;
      }
   }
+
+  originalData = new unsigned char[imagesize];
+  memcpy(originalData, data, imagesize);
 }
 
 
@@ -171,12 +172,19 @@ int Bmp::max3(int a, int b, int c) {
     else if (c >= a && c >= b) return c;
 }
 
-void Bmp::countColors()
+void Bmp::auxCount(int maxCount, int v_max, int *count, int i) {
+    if(count[i] > maxCount) {
+        maxCount = count[i];
+        v_max = i;
+    }
+}
+
+void Bmp::countColors(int h, int w)
 {
     int sum = 0;
 
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
+    for(int y = 0; y < h; y++) {
+        for(int x = 0; x < w; x++) {
             float red = (float)data[sum];
             float green = (float)data[sum + 1];
             float blue = (float)data[sum + 2];
@@ -219,51 +227,44 @@ void Bmp::resizeImage(int new_x, int new_y)
     float scale_y = (float)new_y/(float)height;
 
     int bpl = (3 * (new_x + 1)/4) * 4;
-    new_x = bpl/3;
+    int imgsize = bpl * new_y;
 
-    unsigned char *temp = new unsigned char [bpl * new_y];
+    data = new unsigned char [imgsize];
 
     for (int y = 0; y < new_y; y++) {
         for (int x = 0; x < new_x; x++) {
             int new_pos = (y * bpl) + (x * 3);
             int old_pos = floor(y/scale_y) * bytesPerLine + floor(x/scale_x) * 3;
 
-            temp[new_pos] = data[old_pos];
-            temp[new_pos + 1] = data[old_pos + 1];
-            temp[new_pos + 2] = data[old_pos + 2];
+            data[new_pos] = originalData[old_pos];
+            data[new_pos + 1] = originalData[old_pos + 1];
+            data[new_pos + 2] = originalData[old_pos + 2];
         }
     }
 
-    width = new_x;
-    height = new_y;
-
-    bytesPerLine = (3 * (width + 1) / 4) * 4;
-    imagesize    = bytesPerLine * height;
-    data = new unsigned char[imagesize];
-    memcpy(data, temp, imagesize);
-
     startCount();
-    countColors();
+    countColors(new_x, new_y);
 }
 
-void Bmp::renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotation)
+void Bmp::renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool b, int rotation)
 {
     int sum = 0;
+    float red, green, blue, lum;
 
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
+    for(int y = 0; y < h; y++) {
+        for(int x = 0; x < w; x++) {
             if(!r && !g && !b) {
-                float red = ((float)data[sum]/255) * 0.299;
-                float green = ((float)data[sum + 1]/255) * 0.587;
-                float blue = ((float)data[sum + 2]/255) * 0.114;
+                red = ((float)data[sum]/255) * 0.299;
+                green = ((float)data[sum + 1]/255) * 0.587;
+                blue = ((float)data[sum + 2]/255) * 0.114;
 
-                float lum = red + green + blue;
+                lum = red + green + blue;
 
                 color(lum, lum, lum);
             } else {
-                float red = ((float)data[sum]/255) * r;
-                float green = ((float)data[sum + 1]/255) * g;
-                float blue = ((float)data[sum + 2]/255) * b;
+                red = ((float)data[sum]/255) * r;
+                green = ((float)data[sum + 1]/255) * g;
+                blue = ((float)data[sum + 2]/255) * b;
 
                 color(red, green, blue);
             }
@@ -271,11 +272,11 @@ void Bmp::renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotatio
             if (rotation == 1) {
                 point(pos_x + x, pos_y + y);
             } else if (rotation == 2) {
-                point(pos_x + width - x, pos_y + height - y);
+                point(pos_x + w - x, pos_y + h - y);
             } else if (rotation == 3) {
-                point(pos_x + height - y, pos_y + x);
+                point(pos_x + h - y, pos_y + x);
             } else if (rotation == 4) {
-                point(pos_x + y, pos_y + width - x);
+                point(pos_x + y, pos_y + w - x);
             }
 
             sum += 3;

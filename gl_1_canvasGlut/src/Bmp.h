@@ -46,20 +46,29 @@ typedef struct {
 class Bmp
 {
 private:
-   bool resized;
-   int width, height, imagesize, bytesPerLine, bits, r_max, r_maxCount, g_max, g_maxCount, b_max, b_maxCount, l_max, l_maxCount, max;
-   int r_count[256], g_count[256], b_count[256], l_count[256];
-   unsigned char *data;
+   int width, height,
+       imagesize,
+       bytesPerLine, bits,
+       r_max, r_maxCount,
+       g_max, g_maxCount,
+       b_max, b_maxCount,
+       l_max, l_maxCount, max;
+   int r_count[256],
+       g_count[256],
+       b_count[256],
+       l_count[256];
+   unsigned char *data, *originalData;
 
    HEADER     header;
    INFOHEADER info;
 
    void load(const char *fileName);
    void startCount();
-   void countColors();
+   void countColors(int w, int h);
    void countLum();
    void graph(int x0, int y0, int xf, int yf);
    void drawMaxGraph(int x0, int y0, bool r, bool g, bool b);
+   void auxCount(int maxCount, int v_max, int *count, int i);
    int  max3(int a, int b, int c);
 
 public:
@@ -68,7 +77,7 @@ public:
    int    getWidth(void);
    int    getHeight(void);
    void   convertBGRtoRGB(void);
-   void   renderBitmap(int pos_x, int pos_y, bool r, bool g, bool b, int rotation);
+   void   renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool b, int rotation);
    void   renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b);
    void   resizeImage(int new_x, int new_y);
 };

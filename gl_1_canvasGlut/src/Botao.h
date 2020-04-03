@@ -8,24 +8,26 @@ class Botao{
   char label[100];
 
 public:
-  Botao(float _x, float _y, float _larg, float _alt, char *_label, bool _r, bool _g, bool _b)
+  Botao(float _larg, float _alt, char *_label, bool _r, bool _g, bool _b)
   {
      altura  = _alt;
      largura = _larg;
-     x = _x;
-     y = _y;
      strcpy(label, _label);
      if(_r) r = 0.5;
      if(_g) g = 0.5;
      if(_b) b = 0.5;
   }
 
-  void Render(bool active)
+  void Render(bool active, int x0, int y0)
   {
       color(r + (r * active), g + (g * active), b + (b * active));
-      rectFill(x, y, x + largura, y + altura);
+      rectFill(x0, y0 , x0 + largura, y0 + altura);
+
       color(0, 0, 0);
-      text(x + 4, y + altura/4, label); //escreve o label do botao mais ou menos ao centro.
+      text(x0 + 4, y0 + altura/4, label); //escreve o label do botao mais ou menos ao centro.
+
+      x = x0;
+      y = y0;
   }
 
   //recebe as coordenadas do mouse para tratar clique ou detectar quando o mouse esta em cima do botao
@@ -38,6 +40,13 @@ public:
       return false;
   }
 
+  int getLargura(void) {
+    return largura;
+  }
+
+  int getAltura(void) {
+    return altura;
+  }
 };
 
 #endif
