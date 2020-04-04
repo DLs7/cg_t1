@@ -1,11 +1,7 @@
-//*********************************************************
-//
-// classe para fazer o carregamento de arquivos no formato BMP
-// Autor: Cesar Tadeu Pozzer
-//        pozzer@inf.ufsm.br
-//  Versao 09/2010
-//
-//**********************************************************
+/*******************************************************
+// Esta classe armazena e trata tudo que envolve bitmap.
+*******************************************************/
+
 
 #include "Bmp.h"
 #include <string.h>
@@ -20,8 +16,6 @@ Bmp::Bmp(const char *fileName)
 
    if( fileName != NULL && strlen(fileName) > 0 ) load(fileName);
    else exit(1);
-
-   countColors(width, height);
 }
 
 uchar* Bmp::getImage()
@@ -39,6 +33,11 @@ int Bmp::getHeight(void)
   return height;
 }
 
+
+// Fiz uma alteração nessa função.
+// Converto o data para RGB, e logo após eu copio o data para o originalData.
+// O originalData guarda a data original que foi carregada no programa. Uso
+// essa variável para evitar perda de qualidade quando faço o resize na imagem.
 void Bmp::convertBGRtoRGB()
 {
   unsigned char tmp;
@@ -56,6 +55,9 @@ void Bmp::convertBGRtoRGB()
 
   originalData = new unsigned char[imagesize];
   memcpy(originalData, data, imagesize);
+
+  // Contagem de cores para o histograma após essa conversão.
+  countColors(width, height);
 }
 
 
@@ -144,6 +146,9 @@ void Bmp::load(const char *fileName)
   fclose(fp);
 }
 
+// Começa os contadores.
+// maxCount = qual cor mais apareceu;
+// count* = contagem de todas as cores.
 void Bmp::startCount()
 {
     r_maxCount = 0;
@@ -159,19 +164,14 @@ void Bmp::startCount()
     }
 }
 
+// Pega o maior número entre três.
 int Bmp::max3(int a, int b, int c) {
     if (a >= b && a >= c) return a;
     else if (b >= a && b >= c) return b;
     else if (c >= a && c >= b) return c;
 }
 
-void Bmp::auxCount(int maxCount, int v_max, int *count, int i) {
-    if(count[i] > maxCount) {
-        maxCount = count[i];
-        v_max = i;
-    }
-}
-
+// Função que tem o único propósito de limpar o código da countColors.
 void Bmp::getMaxCount(int *this_count, int i, int *maxCount, int *this_max)
 {
     if(this_count[i] > *maxCount) {
@@ -180,12 +180,15 @@ void Bmp::getMaxCount(int *this_count, int i, int *maxCount, int *this_max)
     }
 }
 
+// Essa função é chamada toda vez que uma imagem é carregada ou re-escalada.
+// Serve para contar as cores para o histograma e definir qual o r, g, b e luminância máximos.
 void Bmp::countColors(int h, int w)
 {
     startCount();
 
     int sum = 0;
 
+    // Percorre todo o data contando as cores e a luminância.
     for(int y = 0; y < h; y++) {
         for(int x = 0; x < w; x++) {
             float red = (float)data[sum];
@@ -193,15 +196,16 @@ void Bmp::countColors(int h, int w)
             float blue = (float)data[sum + 2];
             float lum = (red * 0.299) + (green * 0.587) + (blue * 0.114);
 
-            r_count[(int)round(red)]++;
-            g_count[(int)round(green)]++;
-            b_count[(int)round(blue)]++;
-            l_count[(int)round(lum)]++;
+            r_count[(int)red]++;
+            g_count[(int)green]++;
+            b_count[(int)blue]++;
+            l_count[(int)lum]++;
 
             sum += 3;
         }
     }
 
+    // Encontra o tom de cor e a luminância mais contadas.
     for(int i = 0; i < 256; i++) {
         getMaxCount(r_count, i, &r_maxCount, &r_max);
         getMaxCount(g_count, i, &g_maxCount, &g_max);
@@ -209,10 +213,14 @@ void Bmp::countColors(int h, int w)
         getMaxCount(l_count, i, &l_maxCount, &l_max);
     }
 
-
-    c_max = max3(r_maxCount, g_maxCount, b_maxCount);
+    // Encontra qual o maior entre o r, g e b.
+    // Essa variável divide o maxCount de cada cor para
+    // plotar corretamente o histograma.
+    c_maxCount = max3(r_maxCount, g_maxCount, b_maxCount);
 }
 
+// Essa função realiza o resizing da imagem a partir do originalData e da width/height
+// que está armazenada no main.cpp. Usa o método de nearest neighbor.
 void Bmp::resizeImage(int new_x, int new_y)
 {
     float scale_x = (float)new_x/(float)width;
@@ -234,9 +242,14 @@ void Bmp::resizeImage(int new_x, int new_y)
         }
     }
 
+    // Conta as cores novamente para atualizar o histograma.
     countColors(new_x, new_y);
 }
 
+// Essa função renderiza o bitmap. Percorre todo o data desenhando pixels na tela até o for acabar.
+// Recebe os booleanos r, g, b da main que definem se uma cor vai aparecer ou não.
+// Recebe também a rotação da imagem. Um int simples. 1 para cima, 2 para baixo, 3 para a esquerda
+// e 4 para a direita.
 void Bmp::renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool b, int rotation)
 {
     clear(0, 0, 0);
@@ -246,6 +259,7 @@ void Bmp::renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool 
 
     for(int y = 0; y < h; y++) {
         for(int x = 0; x < w; x++) {
+            // Caso r, g, b = false, desenha a imagem em tons de cinza.
             if(!r && !g && !b) {
                 red = ((float)data[sum]/255) * 0.299;
                 green = ((float)data[sum + 1]/255) * 0.587;
@@ -254,6 +268,7 @@ void Bmp::renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool 
                 lum = red + green + blue;
 
                 color(lum, lum, lum);
+            // Caso não, desenha ela normalmente, definindo as cores falsas como 0.
             } else {
                 red = ((float)data[sum]/255) * r;
                 green = ((float)data[sum + 1]/255) * g;
@@ -277,63 +292,97 @@ void Bmp::renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool 
     }
 }
 
-void Bmp::renderHistogramPoint(int x0, int y0, int *c_count, int x, bool t) {
-    int pos = (int)round((c_count[x] * 100)/c_max);
-    if(t == true) point(x0 + x, y0 + pos);
+// Renderiza um ponto no histograma nos parâmetros enviados. Serve pra despoluir a renderHistogram.
+void Bmp::renderHistogramPoint(int x0, int y0, int *c_count, int this_maxCount, int x, bool t) {
+    if(t) {
+        int pos = (int)((c_count[x] * 100)/this_maxCount);
+        point(x0 + x, y0 + pos);
+    }
 }
 
+// Função responsável por renderizar todo o histograma. Desenha o gráfico, o valor máximo de r, g, b e
+// luminância, assim como os pontos de cada cor.
 void Bmp::renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b)
 {
-    graph(x0, y0, xf, yf);
+    graph(x0, y0, xf, yf, r, g, b);
     drawMaxGraph(x0, y0, r, g, b);
 
     for(int x = 0; x < 256; x++) {
         color(1, 0, 0);
-        renderHistogramPoint(x0, y0, r_count, x, r);
+        renderHistogramPoint(x0, y0, r_count, c_maxCount, x, r);
 
         color(0, 1, 0);
-        renderHistogramPoint(x0, y0, g_count, x, g);
+        renderHistogramPoint(x0, y0, g_count, c_maxCount, x, g);
 
         color(0, 0, 1);
-        renderHistogramPoint(x0, y0, b_count, x, b);
+        renderHistogramPoint(x0, y0, b_count, c_maxCount, x, b);
 
         color(1, 1, 1);
-        renderHistogramPoint(x0, y0, l_count, x, (!r && !g && !b));
+        renderHistogramPoint(x0, y0, l_count, l_maxCount, x, (!r && !g && !b));
     }
 }
 
-void Bmp::setMaxGraph(int x0, int y0, int this_max, int this_maxCount, int this_c_max, bool t) {
+// Função que define *onde* no eixo x e y está localizado o valor máximo de r, g, b e luminância.
+void Bmp::setMaxGraph(int x0, int y0, int this_max, int this_maxCount, int this_c_maxCount, bool t) {
     if(t) {
         int xi = x0 - 5, xf = x0 + 5;
         int yi = y0 - 5, yf = y0 + 5;
 
         int x = x0 + this_max;
-        int y = y0 + (int)round((this_maxCount * 100)/c_max);
+        int y = y0 + (int)round((this_maxCount * 100)/this_c_maxCount);
 
         line(xi, y, xf, y);
         line(x, yi, x, yf);
     }
 }
 
+// Função que desenha o valor máximo de r, g, b e luminância no gráfico
 void Bmp::drawMaxGraph(int x0, int y0, bool r, bool g, bool b)
 {
     color(1, 0, 0);
-    setMaxGraph(x0, y0, r_max, r_maxCount, c_max, r);
+    setMaxGraph(x0, y0, r_max, r_maxCount, c_maxCount, r);
 
     color(0, 1, 0);
-    setMaxGraph(x0, y0, g_max, g_maxCount, c_max, g);
+    setMaxGraph(x0, y0, g_max, g_maxCount, c_maxCount, g);
 
     color(0, 0, 1);
-    setMaxGraph(x0, y0, b_max, b_maxCount, c_max, b);
+    setMaxGraph(x0, y0, b_max, b_maxCount, c_maxCount, b);
 
     color(1, 1, 1);
     setMaxGraph(x0, y0, l_max, l_maxCount, l_maxCount, (!r && !g && !b));
 }
 
+// Função que retorna o maior valor de todas as cores. Existe simplesmente pra podermos
+// usar o graphTextOffset/1 na main pra desenhar um retângulo embaixo dos números do eixo
+// y do gráfico.
 int Bmp::getMax(void) {
-    return c_max;
+    return c_maxCount;
 }
 
+// Função que retorna o maior valor da luminância. Existe simplesmente pra podermos
+// usar o graphTextOffset/1 na main pra desenhar um retângulo embaixo dos números do eixo
+// y do gráfico.
+int Bmp::getMaxLum(void) {
+    return l_maxCount;
+}
+
+// Posiciona o texto contendo o valor máximo e o valor médio no eixo y do histograma.
+void Bmp::placeText(int this_maxCount, int x0, int y0, int yf) {
+    int med;
+    char buffer[7];
+
+    med = this_maxCount/2;
+
+    text(x0 - 15, y0 - 4, "0");
+
+    sprintf(buffer, "%d", med);
+    text(x0 - graphTextOffset(med), y0 + ((yf - y0)/2) - 4, buffer);
+
+    sprintf(buffer, "%d", this_maxCount);
+    text(x0 - graphTextOffset(this_maxCount), yf - 4, buffer);
+}
+
+// Serve pra setar o offset do texto dos valores máximos no eixo y do histograma.
 int Bmp::graphTextOffset(int value) {
     if (value/100 < 1)
         return 25;
@@ -347,49 +396,43 @@ int Bmp::graphTextOffset(int value) {
         return 65;
 }
 
-void Bmp::graph(int x0, int y0, int xf, int yf)
+// Desenha o gráfico do histograma. Setas, marcadores e texto.
+void Bmp::graph(int x0, int y0, int xf, int yf, bool r, bool g, bool b)
 {
     color(1, 1, 1);
 
-    int med = c_max/2;
-    char b[7];
-
-    // EIXO X
-
+    // Desenha os valores no eixo x.
     text(x0 - 4, y0 - 16, "0");
     text(x0 + ((xf - x0)/2) - 14, y0 - 16, "127");
     text(xf - 14, y0 - 16, "255");
+
+    // Desenha as linhas pontilhadas no eixo x.
     for(int x = 0; x <= 256; x += 16) {
         line(x0 + x, y0 - 2, x0 + x, y0 + 2);
     }
 
-    // SETA EIXO X
-
+    // Desenha a flechinha do eixo x.
     line(x0, y0, xf + 8, y0);
     line(xf + 4, y0 + 4, xf + 8, y0);
     line(xf + 4, y0 - 4, xf + 8, y0);
 
-    // EIXO Y
+    // Desenha os valores no eixo y.
+    if(!r && !g && !b) placeText(l_maxCount, x0, y0, yf);
+    else placeText(c_maxCount, x0, y0, yf);
 
-    text(x0 - 15, y0 - 4, "0");
-
-    sprintf(b, "%d", med);
-    text(x0 - graphTextOffset(med), y0 + ((yf - y0)/2) - 4, b);
-
-    sprintf(b, "%d", c_max);
-    text(x0 - graphTextOffset(c_max), yf - 4, b);
-
+    // Desenha as linhas pontilhadas no eixo y.
     for(int y = 0; y <= 100; y+=10) {
         line(x0 - 2, y0 + y, x0 + 2, y0 + y);
     }
 
-    // SETA EIXO Y
-
+    // Desenha a flechinha do eixo y.
     line(x0, y0, x0, yf + 8);
     line(x0 - 4, yf + 4, x0, yf + 8);
     line(x0 + 4, yf + 4, x0, yf + 8);
 }
 
+// Chamada na main pra restaurar a imagem aos valores originais de cor, escala, rotação
+// e informação.
 void Bmp::restoreData()
 {
     data = new unsigned char[imagesize];

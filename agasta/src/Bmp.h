@@ -46,17 +46,17 @@ typedef struct {
 class Bmp
 {
 private:
-   int width, height,
-       imagesize,
-       bytesPerLine, bits,
-       r_max, r_maxCount,
-       g_max, g_maxCount,
-       b_max, b_maxCount,
-       l_max, l_maxCount, c_max;
-   int r_count[256],
-       g_count[256],
-       b_count[256],
-       l_count[256];
+   int width, height,                  // Largura e altura da imagem
+       imagesize,                      // Tamanho, em bytes, da imagem
+       bytesPerLine, bits,             // Quantidade de bytes por linha e bits totais da imagem
+       r_max, r_maxCount,              // Tom vermelho mais predominante e quantas vezes ele se repetiu
+       g_max, g_maxCount,              // Tom verde mais predominante e quantas vezes ele se repetiu
+       b_max, b_maxCount,              // Tom azul mais predominante e quantas vezes ele se repetiu
+       l_max, l_maxCount, c_maxCount;  // Valor de luminância mais predominante e quantas vezes ele se repetiu
+   int r_count[256],                   // Vetor responsável por contar cada tom de vermelho.
+       g_count[256],                   // Vetor responsável por contar cada tom de verde.
+       b_count[256],                   // Vetor responsável por contar cada tom de azul.
+       l_count[256];                   // Vetor responsável por contar cada valor de luminância.
    unsigned char *data, *originalData;
 
    HEADER     header;
@@ -65,13 +65,12 @@ private:
    void load(const char *fileName);
    void startCount();
    void countColors(int w, int h);
-   void countLum();
-   void graph(int x0, int y0, int xf, int yf);
+   void graph(int x0, int y0, int xf, int yf, bool r, bool g, bool b);
    void drawMaxGraph(int x0, int y0, bool r, bool g, bool b);
-   void auxCount(int maxCount, int v_max, int *count, int i);
    void getMaxCount(int *this_count, int i, int *maxCount, int *this_max);
-   void renderHistogramPoint(int x0, int y0, int *c_count, int x, bool t);
+   void renderHistogramPoint(int x0, int y0, int *c_count, int this_maxCount, int x, bool t);
    void setMaxGraph(int x0, int y0, int this_max, int this_maxCount, int this_c_max, bool t);
+   void placeText(int this_maxCount, int x0, int y0, int yf);
    int  max3(int a, int b, int c);
 
 public:
@@ -80,6 +79,7 @@ public:
    int    getWidth(void);
    int    getHeight(void);
    int    getMax(void);
+   int    getMaxLum(void);
    int    graphTextOffset(int value);
    void   convertBGRtoRGB(void);
    void   renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool b, int rotation);
