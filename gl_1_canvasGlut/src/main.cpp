@@ -61,21 +61,8 @@ int offsetX, offsetY, graphOffset;
 
 int screenWidth = 0, screenHeight = 0, minScreenHeight = 0; //largura e altura inicial da tela . Alteram com o redimensionamento de tela.
 int imgWidth = 0, imgHeight = 0;
-int resWidth = 0, resHeight = 0;
 
 int mouseX, mouseY; //variaveis globais do mouse para poder exibir dentro da render().
-
-void GetDesktopResolution(int& horizontal, int& vertical)
-{
-   RECT desktop;
-
-   const HWND hDesktop = GetDesktopWindow();
-
-   GetWindowRect(hDesktop, &desktop);
-
-   horizontal = desktop.right;
-   vertical = desktop.bottom;
-}
 
 void startButtons()
 {
@@ -104,6 +91,12 @@ void renderButtons(int x0, int y0)
 {
     // RGB buttons
 
+    if(r || g || b) m = false;
+    if(!r || !g || !b) f = false;
+
+    if(r && g && b) f = true;
+    if(!r && !g && !b) m = true;
+
     bf->Render(f, x0, y0 + (2 * BUTTON_Y));
     br->Render(r, x0 + (2 * BUTTON_X), y0 + (2 * BUTTON_Y));
     bg->Render(g, x0 + (4 * BUTTON_X), y0 + (2 * BUTTON_Y));
@@ -123,6 +116,16 @@ void renderButtons(int x0, int y0)
     bright->Render(true, x0 + (15 * BUTTON_X), y0 + (2 * BUTTON_Y));
 }
 
+void renderHud() {
+   int hudX = screenWidth - graphOffset + offsetX;
+
+   color(0, 0, 0);
+   rectFill(hudX - bmp->graphTextOffset(bmp->getMax()), 0, screenWidth, screenHeight);
+
+   bmp->renderHistogram(hudX, 1.5 * offsetY, screenWidth - offsetX, 1.5 * offsetY + 100, r, g, b);
+   renderButtons(hudX, 1.5 * offsetY + 100);
+}
+
 //funcao chamada continuamente. Deve-se controlar o que desenhar por meio de variaveis globais
 //Todos os comandos para desenho na canvas devem ser chamados dentro da render().
 //Deve-se manter essa função com poucas linhas de codigo.
@@ -130,14 +133,8 @@ void render()
 {
    clear(0, 0, 0);
    bmp->renderBitmap(offsetX, offsetY, imgWidth, imgHeight, r, g, b, rotation);
-   bmp->renderHistogram(screenWidth - graphOffset, offsetY, screenWidth - offsetX, offsetY + 100, r, g, b);
-   renderButtons(screenWidth - graphOffset, offsetY + 100);
 
-   if(r || g || b) m = false;
-   if(!r || !g || !b) f = false;
-
-   if(r && g && b) f = true;
-   if(!r && !g && !b) m = true;
+   renderHud();
 }
 
 void fullColor(bool x, bool y)
@@ -154,20 +151,13 @@ bool PreventCrash(float mult) {
     else return false;
 }
 
-bool PreventOversize(float mult) {
-    if(imgWidth * mult <= resWidth && imgHeight * mult <= resHeight) return true;
-    else return false;
-}
-
 void imgResize(float mult)
 {
-    if(PreventCrash(mult) && PreventOversize(mult)) {
+    if(PreventCrash(mult)) {
         imgWidth = imgWidth * mult;
         imgHeight = imgHeight * mult;
         bmp->resizeImage(imgWidth, imgHeight);
     }
-
-    printf("\n%dx%d", imgWidth, imgHeight);
 }
 
 //funcao chamada toda vez que uma tecla for pressionada.
@@ -231,13 +221,11 @@ void loadBmpAndSetSizes(char *path) {
    imgWidth = bmp->getWidth();
    imgHeight = bmp->getHeight();
 
-   GetDesktopResolution(resWidth, resHeight);
+   offsetX = MIN_OFFSET;
+   offsetY = MIN_OFFSET;
 
-   offsetX = MIN_OFFSET; //+ screenWidth/8;
-   offsetY = MIN_OFFSET; //+ screenHeight/8;
-
-   graphOffset = 256 + offsetX;
-   minScreenHeight = 200 + (2 * offsetY);
+   graphOffset = 256 + (2 * offsetX);
+   minScreenHeight = 200;
 
    if(imgHeight > imgWidth) {
       screenWidth = (2 * offsetX) + imgHeight + graphOffset;
@@ -254,7 +242,7 @@ void loadBmpAndSetSizes(char *path) {
 
 int main(void)
 {
-   loadBmpAndSetSizes((char*)".\\gl_1_canvasGlut\\resources\\thomas.bmp");
+   loadBmpAndSetSizes((char*)".\\gl_1_canvasGlut\\resources\\img1.bmp");
 
    initCanvas(&screenWidth, &screenHeight, "T1 - Augusto Gai Dal'Asta");
    runCanvas();

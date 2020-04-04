@@ -18,17 +18,9 @@ Bmp::Bmp(const char *fileName)
    width = height = 0;
    data = NULL;
 
-   if( fileName != NULL && strlen(fileName) > 0 )
-   {
-      load(fileName);
-      printf("\nFile opened.");
-   }
-   else
-   {
-      printf("Error: Invalid BMP filename");
-   }
+   if( fileName != NULL && strlen(fileName) > 0 ) load(fileName);
+   else exit(1);
 
-   startCount();
    countColors(width, height);
 }
 
@@ -72,11 +64,11 @@ void Bmp::load(const char *fileName)
   FILE *fp = fopen(fileName, "rb");
   if( fp == NULL )
   {
-     printf("\nErro ao abrir arquivo %s para leitura", fileName);
+     printf("Erro ao abrir arquivo %s para leitura", fileName);
      return;
   }
 
-  printf("\n\nCarregando arquivo %s", fileName);
+  printf("Carregando arquivo %s", fileName);
 
   //le o HEADER componente a componente devido ao problema de alinhamento de bytes. Usando
   //o comando fread(header, sizeof(HEADER),1,fp) sao lidos 16 bytes ao inves de 14
@@ -111,6 +103,7 @@ void Bmp::load(const char *fileName)
   printf("\nbytesPerLine: %d", width * 3);
   printf("\ndelta: %d", delta);
   printf("\nimagesize: %d %d", imagesize, info.imagesize);
+  printf("\n\n");
 
   if( header.type != 19778 )
   {
@@ -179,8 +172,18 @@ void Bmp::auxCount(int maxCount, int v_max, int *count, int i) {
     }
 }
 
+void Bmp::getMaxCount(int *this_count, int i, int *maxCount, int *this_max)
+{
+    if(this_count[i] > *maxCount) {
+        *maxCount = this_count[i];
+        *this_max = i;
+    }
+}
+
 void Bmp::countColors(int h, int w)
 {
+    startCount();
+
     int sum = 0;
 
     for(int y = 0; y < h; y++) {
@@ -200,25 +203,14 @@ void Bmp::countColors(int h, int w)
     }
 
     for(int i = 0; i < 256; i++) {
-        if(r_count[i] > r_maxCount) {
-            r_maxCount = r_count[i];
-            r_max = i;
-        }
-        if(g_count[i] > g_maxCount) {
-            g_maxCount = g_count[i];
-            g_max = i;
-        }
-        if(b_count[i] > b_maxCount) {
-            b_maxCount = b_count[i];
-            b_max = i;
-        }
-        if(l_count[i] > l_maxCount) {
-            l_maxCount = l_count[i];
-            l_max = i;
-        }
+        getMaxCount(r_count, i, &r_maxCount, &r_max);
+        getMaxCount(g_count, i, &g_maxCount, &g_max);
+        getMaxCount(b_count, i, &b_maxCount, &b_max);
+        getMaxCount(l_count, i, &l_maxCount, &l_max);
     }
 
-    max = max3(r_maxCount, g_maxCount, b_maxCount);
+
+    c_max = max3(r_maxCount, g_maxCount, b_maxCount);
 }
 
 void Bmp::resizeImage(int new_x, int new_y)
@@ -242,12 +234,13 @@ void Bmp::resizeImage(int new_x, int new_y)
         }
     }
 
-    startCount();
     countColors(new_x, new_y);
 }
 
 void Bmp::renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool b, int rotation)
 {
+    clear(0, 0, 0);
+
     int sum = 0;
     float red, green, blue, lum;
 
@@ -284,96 +277,113 @@ void Bmp::renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool 
     }
 }
 
+void Bmp::renderHistogramPoint(int x0, int y0, int *c_count, int x, bool t) {
+    int pos = (int)round((c_count[x] * 100)/c_max);
+    if(t == true) point(x0 + x, y0 + pos);
+}
+
 void Bmp::renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b)
 {
     graph(x0, y0, xf, yf);
     drawMaxGraph(x0, y0, r, g, b);
 
-    if(!r && !g && !b) {
-        for(int x = 0; x < 256; x++) {
-            color(1, 1, 1);
-            int l_pos = (int)round((l_count[x] * 100)/l_maxCount);
-            point(x0 + x, y0 + l_pos);
-        }
-    } else {
-        for(int x = 0; x < 256; x++) {
-            color(1, 0, 0);
-            int r_pos = (int)round((r_count[x] * 100)/max);
-            if(r == true) point(x0 + x, y0 + r_pos);
+    for(int x = 0; x < 256; x++) {
+        color(1, 0, 0);
+        renderHistogramPoint(x0, y0, r_count, x, r);
 
-            color(0, 1, 0);
-            int g_pos = (int)round((g_count[x] * 100)/max);
-            if(g == true) point(x0 + x, y0 + g_pos);
+        color(0, 1, 0);
+        renderHistogramPoint(x0, y0, g_count, x, g);
 
-            color(0, 0, 1);
-            int b_pos = (int)round((b_count[x] * 100)/max);
-            if(b == true) point(x0 + x, y0 + b_pos);
-        }
+        color(0, 0, 1);
+        renderHistogramPoint(x0, y0, b_count, x, b);
+
+        color(1, 1, 1);
+        renderHistogramPoint(x0, y0, l_count, x, (!r && !g && !b));
+    }
+}
+
+void Bmp::setMaxGraph(int x0, int y0, int this_max, int this_maxCount, int this_c_max, bool t) {
+    if(t) {
+        int xi = x0 - 5, xf = x0 + 5;
+        int yi = y0 - 5, yf = y0 + 5;
+
+        int x = x0 + this_max;
+        int y = y0 + (int)round((this_maxCount * 100)/c_max);
+
+        line(xi, y, xf, y);
+        line(x, yi, x, yf);
     }
 }
 
 void Bmp::drawMaxGraph(int x0, int y0, bool r, bool g, bool b)
 {
-    int xi = x0 - 4, xf = x0 + 4;
-    int yi = y0 - 4, yf = y0 + 4;
+    color(1, 0, 0);
+    setMaxGraph(x0, y0, r_max, r_maxCount, c_max, r);
 
-    int rx = x0 + r_max;
-    int gx = x0 + g_max;
-    int bx = x0 + b_max;
-    int lx = x0 + l_max;
+    color(0, 1, 0);
+    setMaxGraph(x0, y0, g_max, g_maxCount, c_max, g);
 
-    int ry = y0 + (int)round((r_maxCount * 100)/max);
-    int gy = y0 + (int)round((g_maxCount * 100)/max);
-    int by = y0 + (int)round((b_maxCount * 100)/max);
-    int ly = y0 + 100;
+    color(0, 0, 1);
+    setMaxGraph(x0, y0, b_max, b_maxCount, c_max, b);
 
-    if(!r && !g && !b) {
-      color(1, 1, 1);
-      line(xi, ly, xf, ly);
-      line(lx, yi, lx, yf);
-    } else {
-        if(r) {
-            color(1, 0, 0);
-            line(xi, ry, xf, ry);
-            line(rx, yi, rx, yf);
-        }
-        if(g) {
-            color(0, 1, 0);
-            line(xi, gy, xf, gy);
-            line(gx, yi, gx, yf);
-        }
-        if(b) {
-            color(0, 0, 1);
-            line(xi, by, xf, by);
-            line(bx, yi, bx, yf);
-        }
-    }
+    color(1, 1, 1);
+    setMaxGraph(x0, y0, l_max, l_maxCount, l_maxCount, (!r && !g && !b));
+}
+
+int Bmp::getMax(void) {
+    return c_max;
+}
+
+int Bmp::graphTextOffset(int value) {
+    if (value/100 < 1)
+        return 25;
+    else if (value/100 < 10)
+        return 35;
+    else if (value/ 100 < 100)
+        return 45;
+    else if (value/ 100 < 1000)
+        return 55;
+    else if (value/100 < 10000)
+        return 65;
 }
 
 void Bmp::graph(int x0, int y0, int xf, int yf)
 {
     color(1, 1, 1);
 
-    char b[3];
+    int med = c_max/2;
+    char b[7];
+
+    // EIXO X
 
     text(x0 - 4, y0 - 16, "0");
-    text(x0 + ((xf - x0)/2) - 18, y0 - 16, "127");
-    text(xf - 22, y0 - 16, "255");
+    text(x0 + ((xf - x0)/2) - 14, y0 - 16, "127");
+    text(xf - 14, y0 - 16, "255");
     for(int x = 0; x <= 256; x += 16) {
         line(x0 + x, y0 - 2, x0 + x, y0 + 2);
     }
+
+    // SETA EIXO X
 
     line(x0, y0, xf + 8, y0);
     line(xf + 4, y0 + 4, xf + 8, y0);
     line(xf + 4, y0 - 4, xf + 8, y0);
 
-    text(x0 - 16, y0 - 4, "0");
-    text(x0 - 36, y0 + ((yf - y0)/2) - 4, "0.5");
-    text(x0 - 36, yf - 4, "1.0");
+    // EIXO Y
+
+    text(x0 - 15, y0 - 4, "0");
+
+    sprintf(b, "%d", med);
+    text(x0 - graphTextOffset(med), y0 + ((yf - y0)/2) - 4, b);
+
+    sprintf(b, "%d", c_max);
+    text(x0 - graphTextOffset(c_max), yf - 4, b);
 
     for(int y = 0; y <= 100; y+=10) {
         line(x0 - 2, y0 + y, x0 + 2, y0 + y);
     }
+
+    // SETA EIXO Y
 
     line(x0, y0, x0, yf + 8);
     line(x0 - 4, yf + 4, x0, yf + 8);

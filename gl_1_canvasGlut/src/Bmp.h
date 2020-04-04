@@ -52,7 +52,7 @@ private:
        r_max, r_maxCount,
        g_max, g_maxCount,
        b_max, b_maxCount,
-       l_max, l_maxCount, max;
+       l_max, l_maxCount, c_max;
    int r_count[256],
        g_count[256],
        b_count[256],
@@ -69,6 +69,9 @@ private:
    void graph(int x0, int y0, int xf, int yf);
    void drawMaxGraph(int x0, int y0, bool r, bool g, bool b);
    void auxCount(int maxCount, int v_max, int *count, int i);
+   void getMaxCount(int *this_count, int i, int *maxCount, int *this_max);
+   void renderHistogramPoint(int x0, int y0, int *c_count, int x, bool t);
+   void setMaxGraph(int x0, int y0, int this_max, int this_maxCount, int this_c_max, bool t);
    int  max3(int a, int b, int c);
 
 public:
@@ -80,6 +83,8 @@ public:
    void   renderBitmap(int pos_x, int pos_y, int w, int h, bool r, bool g, bool b, int rotation);
    void   renderHistogram(int x0, int y0, int xf, int yf, bool r, bool g, bool b);
    void   resizeImage(int new_x, int new_y);
+   int    getMax();
+   int    graphTextOffset(int value);
 };
 
 #endif
